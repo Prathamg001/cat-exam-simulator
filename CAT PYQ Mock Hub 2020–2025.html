@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CAT PYQ Mock Hub 2020–2025</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fff;--fg:#1a1d24;--mut:#6b7280;--card:#f3f4f8;--line:#d9dce4;--ac:#3b5bdb;--ok:#2f9e44;--bad:#e03131;--pu:#7048e8}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6e8ee;--mut:#98a0b0;--card:#171c26;--line:#2a3140;--ac:#7c97ff;--ok:#51cf66;--bad:#ff6b6b;--pu:#9775fa}}
+:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6e8ee;--mut:#98a0b0;--card:#171c26;--line:#2a3140;--ac:#7c97ff;--ok:#51cf66;--bad:#ff6b6b;--pu:#9775fa}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:960px;margin:0 auto;padding:16px}h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:16px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+button,a.b{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;padding:8px 12px;text-decoration:none;display:inline-block}
+button.p,a.p{background:var(--ac);color:#fff;border-color:var(--ac)}button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.mut{color:var(--mut);font-size:13px}.tabs{display:flex;gap:6px;flex-wrap:wrap}.opts{display:grid;gap:6px;margin-top:8px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line);z-index:5}
+.timer{font:600 22px ui-monospace,monospace}.low{color:var(--bad)}
+.row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 8px;border:1px solid var(--line);border-radius:8px;margin:5px 0}
+.row.cur{border-color:var(--ac);background:var(--card)}.row b{width:28px}.row button{min-width:38px}
+input[type=text],input[type=number],textarea{font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+input[type=text]{width:90px}input[type=number]{width:70px}textarea{width:100%}
+.mk{color:var(--pu)}.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%}td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+.ok{color:var(--ok)}.bad{color:var(--bad)}.n{font-size:28px;font-weight:700}
+</style></head><body><main id="app"></main>
+<script>
+const SECS=['VARC','DILR','QUANT'],MIN=40;
+// Default question counts per section (VARC, DILR, QUANT). Editable before each attempt.
+const DEF={2020:[26,24,26],2021:[24,20,22],2022:[24,20,22],2023:[24,20,22],2024:[24,22,22],2025:[24,22,22]};
+const KEYS={"2020-1":{"VARC":"3 1 3 3 4 4 1 1 2 2 3 1 4 4 2 2 3 3 1432 3 3124 4 2 1 3 1324","DILR":"3 1 3 1 2 3 3 4 3 1 3 3 4 4 4 3 1 4 3 4 340 10 150 325","QUANT":"21 12 4 3 36 2 3 1 1 20000 3 1 1 3 3 2 4 4 4 3 2 62 1 8 1 4"},"2020-2":{"VARC":"2 4 2 3 3 2 3 2 4 3 3 1 3 2 4 4 3 4 4 1342 2 1 2143 3 2 2413","DILR":"2 9 6 6 1 1 2 4 4 2 3 3 3 3 4 3 2 2 9 11 1 1 3 1","QUANT":"2 3 4 4 1 2704 2 4 1 3 2 800 3 2 315 17 23 1 3 4 2 4 10 2 90000 1"},"2020-3":{"VARC":"3 1 3 3 4 2 1 1 1 2 1 3 2 4 1 4 2 4 3142 3 3 4123 3 2431 4 3","DILR":"4 4 4 2 1 4 1 1 42 20 3 1 4 3 3 1 3 1 2 1 3 4 2 4","QUANT":"3 18 4 1 4 3 4 2 3 40 4 16000 3 3 4 252 6 2 4 28 4 2 24 1 2 3"},"2021-1":{"VARC":"1 3 4 1 3 2 4 1 1 3 2 3 3 4 4 1 4 4 3 2341 4312 2143 5 3","DILR":"1 8 3 3 4 1 1 2 2 6 1 4 1 2 3 4 3 2 1 1","QUANT":"3 1 1000 4 3 3 99 70 1 2 4 1 120 200 47 32 1 1 3 3 1 35"},"2021-2":{"VARC":"4 4 4 1 3 2 4 4 2 3 1 2 1 3 3 2 2143 2413 2 1 1 2 5 3214","DILR":"6 11 2 3 3 3 12 4 2 1 1 4 2 4 5 3 6 2 2 1","QUANT":"7 3 4195 4 1000 1 2 45 1 5 1 4 4 3 3 250 10 2 4 30 1 1"},"2021-3":{"VARC":"3 1 1 2 3 2 2 1 1 1 1 2 4 1 1 3 4 4 3 1 3 3214 2314 3412","DILR":"3 1 3 1 4 4 3 1 2 4 1 4 4 2 1 4 4 1 1 1","QUANT":"3 2 3 12 3 2 4 92 2 1 3500 34 8 3 2 2 4 3000 6 50 2 3"},"2022-1":{"VARC":"1 3 3 2 3 2 2 4 4 1 1 4 4 3 3 1 4 2143 2 4 4 2431 2 3214","DILR":"2 3 3 3 1 2 1 4 8 48 50 1 4 3 4 2 1 1 3 1","QUANT":"3 44 3 66 34 4 4 4 160 2 3 2 84 3 4 4 82 4 111 4 1 43200"},"2022-2":{"VARC":"3 4 4 3 3 4 2 4 4 4 3 4 4 1 2 1 2 3142 2 1 2431 2143 3 4","DILR":"1 2 4 1 50 2 4 4 2 1 84 40 4 4 3 1 1 1 1 1","QUANT":"4 3 24 4 12 4 2 1 1 2 6 1 2 1 2 2 4 4 1 1 4 10"},"2022-3":{"VARC":"4 3 2 1 2 1 4 4 1 3 3 4 1 4 4 2 3 2314 3 4312 1 2 2 3214","DILR":"3 12 27 1 2 2 3 1 40 30 4 4 2 3 2 3 1 6 6 3","QUANT":"3 4 1 3 2 4 11 60 4 1 548 14 9 12 2 150 1 4 4 4 1 63"},"2023-1":{"VARC":"D B D B B D B B A A C C C A D D D A 3 2 4123 4123 D D","DILR":"A D B A D 3 C A 21 C 0 200 A B D 0 0 3 4 C","QUANT":"A A A C 3 2 6 C C B A A B 27 972 20808 D C 2 D A 19"},"2023-2":{"VARC":"B D C A B B C B A B A A B C C B B C 2 3 4132 4321 A C","DILR":"C B 17 11 D B D 25 A 26 45 C 4 9 5 A A A 6 140","QUANT":"D D B A 15 6 7 D C B D B C 7 407 16 D A 45 A B 967"},"2023-3":{"VARC":"C C D D C D B C B C D C A A C B D D 2 2 2431 3142 A D","DILR":"C 2 C 2 A 120 40 A B C 14 C 33 C A 60 A D 40 D","QUANT":"A B C D 9 468 5 C C B C C D 36 42 340 C D 54 A C 3"},"2024-1":{"VARC":"C C B A D B B C A C B 1 C A B A D C C B C B B 2","DILR":"C 4 A B D A C A A 8 4 D 3 5 45 B 2 A 3 2 4 B","QUANT":"B D 31 6 217 B 31 18 42 B D C 15 A 66 10 38 B D B C C"},"2024-2":{"VARC":"4 B C B B C 2 B A B C A D A D B A D B C A C A C","DILR":"A 4 5 6 D D A 5100 3500 150 B 4 B 4 B A 2 26 A C A B","QUANT":"C C A D C A A C C C 14 A 7 2 340 139 11 7 C B B 2160"}};
+let S=null,tm=null,yr=2025;
+const $=s=>document.querySelector(s),fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const e=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const url=(y,s,k)=>`https://percentyl.in/pyq/cat-${y}-slot-${s}/${k.toLowerCase()}`;
+const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k)||'';localStorage.setItem(k,v)}catch(x){return ''}};
+function home(){clearInterval(tm);S=null;
+$('#app').innerHTML=`<h1>CAT PYQ Mock Hub</h1><div class="mut">CAT 2020–2025 · 18 papers · each with VARC, DILR, QUANT sectionals (40 min) and a Full Mock (120 min). Marking +3 / −1 (MCQ), no negative on type-in.</div>
+<div class="tabs" style="margin-top:12px">${Object.keys(DEF).map(y=>`<button class="${y==yr?'on':''}" onclick="yr=${y};home()">CAT ${y}</button>`).join('')}</div>
+<div class="grid">${[1,2,3].map(s=>`<div class="card"><b>CAT ${yr} · Slot ${s}</b>${KEYS[yr+'-'+s]?' <span class="ok mut">✔ answer key built in</span>':' <span class="mut">(paste key after test)</span>'}<div class="opts">${SECS.map(k=>`<button onclick="setup(${yr},${s},'${k}')">${k} Sectional · 40 min</button>`).join('')}<button class="p" onclick="setup(${yr},${s},'FULL')">Full Mock · 120 min</button></div></div>`).join('')}</div>
+<div class="card mut"><b>How it works:</b> pick a paper and mode, open the questions on Percentyl in a new tab, and mark answers on the answer sheet here while the timer runs. Answer keys for CAT 2020–2024 (14 papers) are built in, so your score and analysis appear automatically; for 2024 Slot 3 and CAT 2025 you paste the key after the test.</div>`}
+function setup(y,s,m){const secs=m==='FULL'?SECS:[m];
+$('#app').innerHTML=`<h1>CAT ${y} · Slot ${s} · ${m==='FULL'?'Full Mock (120 min)':m+' Sectional (40 min)'}</h1>
+<div class="card">${KEYS[y+'-'+s]?'<span class="ok">✔ Answer key built in: you’ll get your score and analysis automatically.</span>':'<span class="mut">No built-in key for this paper yet; you can paste one after the test.</span>'}</div>
+<div class="card"><b>1. Check the number of questions</b><div class="mut">Defaults are typical for this year; correct them if the paper differs.</div>${secs.map(k=>`<p>${k}: <input type="number" min="1" max="40" id="n_${k}" value="${DEF[y][SECS.indexOf(k)]}"></p>`).join('')}</div>
+<div class="card"><b>2. Open the question paper</b><div class="mut">Keep it in another tab or window${m==='FULL'?'; you’ll get each section’s link when that section starts':''}.</div><p>${secs.map(k=>`<a class="b" target="_blank" rel="noopener" href="${url(y,s,k)}">${k} questions ↗</a>`).join(' ')}</p></div>
+<button class="p" onclick="begin(${y},${s},'${m}')">Start timer</button> <button onclick="home()">Back</button>`}
+function begin(y,s,m){const secs=m==='FULL'?SECS:[m];S={built:!!KEYS[y+'-'+s],y,s,m,secs,si:0,n:{},a:{},mk:{},t:{},keys:{},cur:0,left:MIN*60};
+secs.forEach(k=>{const n=Math.max(1,+$('#n_'+k).value||1);S.n[k]=n;S.a[k]=[];S.mk[k]=[];S.t[k]=[];S.keys[k]=(KEYS[y+'-'+s]||{})[k]||ls(`catkey:${y}-${s}-${k}`)});run()}
+function run(){S.left=MIN*60;S.cur=0;clearInterval(tm);tm=setInterval(()=>{S.left--;const k=S.secs[S.si];S.t[k][S.cur]=(S.t[k][S.cur]||0)+1;const t=$('#tm');if(t){t.textContent=fmt(S.left);t.className='timer'+(S.left<300?' low':'')}if(S.left<=0){alert('Time up for '+k);endSec()}},1000);draw()}
+function draw(){const k=S.secs[S.si],a=S.a[k];let h=`<div class="bar"><div><b>CAT ${S.y} · Slot ${S.s} · ${k}</b>${S.m==='FULL'?` <span class="mut">section ${S.si+1}/3</span>`:''}</div><div class="timer" id="tm">${fmt(S.left)}</div><button class="p" onclick="endSec(1)">Submit ${S.si<S.secs.length-1?'section':'test'}</button></div>
+<p><a class="b" target="_blank" rel="noopener" href="${url(S.y,S.s,k)}">Open ${k} questions ↗</a> <span class="mut">Tap a row to make it the active question (its time is tracked). Type-in answers go in the box.</span></p>`;
+for(let i=0;i<S.n[k];i++){const v=a[i];h+=`<div class="row ${i===S.cur?'cur':''}" onclick="S.cur=${i};hl()"><b>${i+1}</b>${'ABCD'.split('').map(o=>`<button class="${v===o?'on':''}" onclick="ev(event);pick(${i},'${o}')">${o}</button>`).join('')}<input type="text" placeholder="type-in" value="${/^[A-D]$/.test(v||'')?'':e(v||'')}" onclick="ev(event);S.cur=${i};hl()" oninput="a_(${i},this.value.trim())"><button class="${S.mk[k][i]?'mk':''}" onclick="ev(event);S.mk['${k}'][${i}]=!S.mk['${k}'][${i}];draw()">${S.mk[k][i]?'★':'☆'}</button><button onclick="ev(event);delete S.a['${k}'][${i}];draw()">Clear</button><span class="mut">${S.t[k][i]||0}s</span></div>`}
+$('#app').innerHTML=h}
+const ev=x=>x.stopPropagation();
+function hl(){document.querySelectorAll('.row').forEach((r,i)=>r.classList.toggle('cur',i===S.cur))}
+function pick(i,o){const k=S.secs[S.si];S.cur=i;S.a[k][i]=S.a[k][i]===o?undefined:o;draw()}
+function a_(i,v){S.a[S.secs[S.si]][i]=v===''?undefined:v}
+function endSec(ask){if(ask&&!confirm('Submit now? You can’t come back to this section.'))return;clearInterval(tm);if(S.si<S.secs.length-1){S.si++;alert('Next: '+S.secs[S.si]+' — 40 minutes. Open its questions with the link on the next screen.');run()}else result()}
+function parse(t){return t.split(/[\s,;]+/).filter(Boolean).map(x=>x.replace(/^\d+[:)]/,''))}
+function same(v,kv){if(/^[A-D]$/i.test(kv))return String(v).toUpperCase()===kv.toUpperCase();
+if(/^[A-D]$/.test(v))return /^[1-4]$/.test(kv)&&'ABCD'.indexOf(v)+1==+kv;
+const x=parseFloat(v),y=parseFloat(kv);return !isNaN(x)&&!isNaN(y)?Math.abs(x-y)<1e-9:String(v).toLowerCase()===kv.toLowerCase()}
+function result(){let W=[],U=[],MK=[],rows='',det='',T={sc:0,c:0,w:0,att:0,tot:0,t:0},keyed=false;
+S.secs.forEach(k=>{const key=parse(S.keys[k]||''),hk=key.length>0;keyed=keyed||hk;let c=0,w=0,u=0,att=0,sc=0,tt=0;
+for(let i=0;i<S.n[k];i++){const v=S.a[k][i],t=S.t[k][i]||0,kv=key[i],has=v!==undefined&&v!=='';tt+=t;let res='—';
+if(!has)u++;else{att++;if(hk&&kv!==undefined){if(same(v,kv)){c++;sc+=3;res='✔'}else{w++;if(/^[A-D]$/.test(v))sc-=1;res='✘'}}}
+if(res==='✘')W.push(k+' Q'+(i+1)+' (you '+v+', key '+kv+(t>150?', '+t+'s':'')+')');else if(!has)U.push(k+' Q'+(i+1));if(S.mk[k][i])MK.push(k+' Q'+(i+1)+(res==='✔'?' ✔':res==='✘'?' ✘':''));
+det+=`<tr><td>${k} ${i+1}${S.mk[k][i]?' ★':''}</td><td>${has?e(v):'<span class=mut>skipped</span>'}</td><td>${kv!==undefined?e(kv):'—'}</td><td class="${res==='✔'?'ok':res==='✘'?'bad':''}">${res}</td><td>${t}s</td></tr>`}
+T.sc+=sc;T.c+=c;T.w+=w;T.att+=att;T.tot+=S.n[k];T.t+=tt;
+rows+=`<tr><td><b>${k}</b></td><td>${att}/${S.n[k]}</td><td class="ok">${hk?c:'—'}</td><td class="bad">${hk?w:'—'}</td><td>${S.n[k]-att}</td><td>${hk?sc+' / '+S.n[k]*3:'—'}</td><td>${hk&&c+w?Math.round(100*c/(c+w))+'%':'—'}</td><td>${fmt(tt)}</td><td>${att?Math.round(tt/att)+'s':'—'}</td></tr>`});
+$('#app').innerHTML=`<h1>Analysis · CAT ${S.y} Slot ${S.s} · ${S.m==='FULL'?'Full Mock':S.m}</h1>
+<div class="grid"><div class="card"><div class="mut">Score</div><div class="n">${keyed?T.sc:'—'}</div></div><div class="card"><div class="mut">Accuracy</div><div class="n">${keyed&&T.c+T.w?Math.round(100*T.c/(T.c+T.w))+'%':'—'}</div></div><div class="card"><div class="mut">Attempted</div><div class="n">${T.att}/${T.tot}</div></div><div class="card"><div class="mut">Time used</div><div class="n">${fmt(T.t)}</div></div></div>
+${keyed?'':'<div class="card"><b>Add the answer key to see your score.</b></div>'}
+${S.built?'<div class="card ok">✔ Scored with the built-in answer key.</div>':''}<div class="card" ${S.built?'hidden':''}><b>Answer key</b> <span class="mut">Paste answers in order, separated by spaces, commas or new lines (e.g. <code>B C 42 A 7.5</code> or <code>1:B 2:C 3:42</code>). Copy it from the paper’s page on Percentyl. It’s saved on this device.</span>
+${S.secs.map(k=>`<p>${k}<textarea rows="2" id="k_${k}">${e(S.keys[k]||'')}</textarea></p>`).join('')}<button class="p" onclick="sk()">Calculate score</button></div>
+<h2>Section-wise</h2><div class="card scroll"><table><tr><th>Section</th><th>Attempted</th><th>✔</th><th>✘</th><th>Skipped</th><th>Score</th><th>Accuracy</th><th>Time</th><th>Avg/attempt</th></tr>${rows}</table></div>
+${keyed?`<h2>Where you went wrong</h2><div class="card"><b class="bad">Wrong (${W.length})</b><br>${W.join('; ')||'None 🎉'}<br><br><b>Skipped (${U.length})</b><br>${U.join(', ')||'None'}<br><br><b>Marked for review</b><br>${MK.join(', ')||'None'}<div class="mut" style="margin-top:8px">Wrong answers that took over 150 s show their time: those are the ones to skip or practise. Open the question on Percentyl to read its worked solution.</div></div>`:''}<h2>Question review</h2><div class="card scroll"><table><tr><th>Q (★ = marked)</th><th>Your answer</th><th>Key</th><th></th><th>Time</th></tr>${det}</table></div><button class="p" onclick="home()">Back to papers</button>`;window.scrollTo(0,0)}
+function sk(){S.secs.forEach(k=>{S.keys[k]=$('#k_'+k).value;ls(`catkey:${S.y}-${S.s}-${k}`,S.keys[k])});result()}
+home();
+</script></body></html>
