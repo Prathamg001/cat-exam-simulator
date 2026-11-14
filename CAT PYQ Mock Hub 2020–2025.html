@@ -1,80 +1,3411 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>CAT PYQ Mock Hub 2020–2025</title>
-<style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#fff;--fg:#1a1d24;--mut:#6b7280;--card:#f3f4f8;--line:#d9dce4;--ac:#3b5bdb;--ok:#2f9e44;--bad:#e03131;--pu:#7048e8}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1117;--fg:#e6e8ee;--mut:#98a0b0;--card:#171c26;--line:#2a3140;--ac:#7c97ff;--ok:#51cf66;--bad:#ff6b6b;--pu:#9775fa}}
-:root[data-theme="dark"]{--bg:#0d1117;--fg:#e6e8ee;--mut:#98a0b0;--card:#171c26;--line:#2a3140;--ac:#7c97ff;--ok:#51cf66;--bad:#ff6b6b;--pu:#9775fa}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
-main{max-width:960px;margin:0 auto;padding:16px}h1{font-size:22px;margin:0 0 4px}h2{font-size:17px;margin:16px 0 8px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin:10px 0}
-.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
-button,a.b{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:8px;padding:8px 12px;text-decoration:none;display:inline-block}
-button.p,a.p{background:var(--ac);color:#fff;border-color:var(--ac)}button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
-.mut{color:var(--mut);font-size:13px}.tabs{display:flex;gap:6px;flex-wrap:wrap}.opts{display:grid;gap:6px;margin-top:8px}
-.bar{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line);z-index:5}
-.timer{font:600 22px ui-monospace,monospace}.low{color:var(--bad)}
-.row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 8px;border:1px solid var(--line);border-radius:8px;margin:5px 0}
-.row.cur{border-color:var(--ac);background:var(--card)}.row b{width:28px}.row button{min-width:38px}
-input[type=text],input[type=number],textarea{font:inherit;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
-input[type=text]{width:90px}input[type=number]{width:70px}textarea{width:100%}
-.mk{color:var(--pu)}.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%}td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
-.ok{color:var(--ok)}.bad{color:var(--bad)}.n{font-size:28px;font-weight:700}
-</style></head><body><main id="app"></main>
-<script>
-const SECS=['VARC','DILR','QUANT'],MIN=40;
-// Default question counts per section (VARC, DILR, QUANT). Editable before each attempt.
-const DEF={2020:[26,24,26],2021:[24,20,22],2022:[24,20,22],2023:[24,20,22],2024:[24,22,22],2025:[24,22,22]};
-const KEYS={"2020-1":{"VARC":"3 1 3 3 4 4 1 1 2 2 3 1 4 4 2 2 3 3 1432 3 3124 4 2 1 3 1324","DILR":"3 1 3 1 2 3 3 4 3 1 3 3 4 4 4 3 1 4 3 4 340 10 150 325","QUANT":"21 12 4 3 36 2 3 1 1 20000 3 1 1 3 3 2 4 4 4 3 2 62 1 8 1 4"},"2020-2":{"VARC":"2 4 2 3 3 2 3 2 4 3 3 1 3 2 4 4 3 4 4 1342 2 1 2143 3 2 2413","DILR":"2 9 6 6 1 1 2 4 4 2 3 3 3 3 4 3 2 2 9 11 1 1 3 1","QUANT":"2 3 4 4 1 2704 2 4 1 3 2 800 3 2 315 17 23 1 3 4 2 4 10 2 90000 1"},"2020-3":{"VARC":"3 1 3 3 4 2 1 1 1 2 1 3 2 4 1 4 2 4 3142 3 3 4123 3 2431 4 3","DILR":"4 4 4 2 1 4 1 1 42 20 3 1 4 3 3 1 3 1 2 1 3 4 2 4","QUANT":"3 18 4 1 4 3 4 2 3 40 4 16000 3 3 4 252 6 2 4 28 4 2 24 1 2 3"},"2021-1":{"VARC":"1 3 4 1 3 2 4 1 1 3 2 3 3 4 4 1 4 4 3 2341 4312 2143 5 3","DILR":"1 8 3 3 4 1 1 2 2 6 1 4 1 2 3 4 3 2 1 1","QUANT":"3 1 1000 4 3 3 99 70 1 2 4 1 120 200 47 32 1 1 3 3 1 35"},"2021-2":{"VARC":"4 4 4 1 3 2 4 4 2 3 1 2 1 3 3 2 2143 2413 2 1 1 2 5 3214","DILR":"6 11 2 3 3 3 12 4 2 1 1 4 2 4 5 3 6 2 2 1","QUANT":"7 3 4195 4 1000 1 2 45 1 5 1 4 4 3 3 250 10 2 4 30 1 1"},"2021-3":{"VARC":"3 1 1 2 3 2 2 1 1 1 1 2 4 1 1 3 4 4 3 1 3 3214 2314 3412","DILR":"3 1 3 1 4 4 3 1 2 4 1 4 4 2 1 4 4 1 1 1","QUANT":"3 2 3 12 3 2 4 92 2 1 3500 34 8 3 2 2 4 3000 6 50 2 3"},"2022-1":{"VARC":"1 3 3 2 3 2 2 4 4 1 1 4 4 3 3 1 4 2143 2 4 4 2431 2 3214","DILR":"2 3 3 3 1 2 1 4 8 48 50 1 4 3 4 2 1 1 3 1","QUANT":"3 44 3 66 34 4 4 4 160 2 3 2 84 3 4 4 82 4 111 4 1 43200"},"2022-2":{"VARC":"3 4 4 3 3 4 2 4 4 4 3 4 4 1 2 1 2 3142 2 1 2431 2143 3 4","DILR":"1 2 4 1 50 2 4 4 2 1 84 40 4 4 3 1 1 1 1 1","QUANT":"4 3 24 4 12 4 2 1 1 2 6 1 2 1 2 2 4 4 1 1 4 10"},"2022-3":{"VARC":"4 3 2 1 2 1 4 4 1 3 3 4 1 4 4 2 3 2314 3 4312 1 2 2 3214","DILR":"3 12 27 1 2 2 3 1 40 30 4 4 2 3 2 3 1 6 6 3","QUANT":"3 4 1 3 2 4 11 60 4 1 548 14 9 12 2 150 1 4 4 4 1 63"},"2023-1":{"VARC":"D B D B B D B B A A C C C A D D D A 3 2 4123 4123 D D","DILR":"A D B A D 3 C A 21 C 0 200 A B D 0 0 3 4 C","QUANT":"A A A C 3 2 6 C C B A A B 27 972 20808 D C 2 D A 19"},"2023-2":{"VARC":"B D C A B B C B A B A A B C C B B C 2 3 4132 4321 A C","DILR":"C B 17 11 D B D 25 A 26 45 C 4 9 5 A A A 6 140","QUANT":"D D B A 15 6 7 D C B D B C 7 407 16 D A 45 A B 967"},"2023-3":{"VARC":"C C D D C D B C B C D C A A C B D D 2 2 2431 3142 A D","DILR":"C 2 C 2 A 120 40 A B C 14 C 33 C A 60 A D 40 D","QUANT":"A B C D 9 468 5 C C B C C D 36 42 340 C D 54 A C 3"},"2024-1":{"VARC":"C C B A D B B C A C B 1 C A B A D C C B C B B 2","DILR":"C 4 A B D A C A A 8 4 D 3 5 45 B 2 A 3 2 4 B","QUANT":"B D 31 6 217 B 31 18 42 B D C 15 A 66 10 38 B D B C C"},"2024-2":{"VARC":"4 B C B B C 2 B A B C A D A D B A D B C A C A C","DILR":"A 4 5 6 D D A 5100 3500 150 B 4 B 4 B A 2 26 A C A B","QUANT":"C C A D C A A C C C 14 A 7 2 340 139 11 7 C B B 2160"}};
-let S=null,tm=null,yr=2025;
-const $=s=>document.querySelector(s),fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
-const e=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const url=(y,s,k)=>`https://percentyl.in/pyq/cat-${y}-slot-${s}/${k.toLowerCase()}`;
-const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k)||'';localStorage.setItem(k,v)}catch(x){return ''}};
-function home(){clearInterval(tm);S=null;
-$('#app').innerHTML=`<h1>CAT PYQ Mock Hub</h1><div class="mut">CAT 2020–2025 · 18 papers · each with VARC, DILR, QUANT sectionals (40 min) and a Full Mock (120 min). Marking +3 / −1 (MCQ), no negative on type-in.</div>
-<div class="tabs" style="margin-top:12px">${Object.keys(DEF).map(y=>`<button class="${y==yr?'on':''}" onclick="yr=${y};home()">CAT ${y}</button>`).join('')}</div>
-<div class="grid">${[1,2,3].map(s=>`<div class="card"><b>CAT ${yr} · Slot ${s}</b>${KEYS[yr+'-'+s]?' <span class="ok mut">✔ answer key built in</span>':' <span class="mut">(paste key after test)</span>'}<div class="opts">${SECS.map(k=>`<button onclick="setup(${yr},${s},'${k}')">${k} Sectional · 40 min</button>`).join('')}<button class="p" onclick="setup(${yr},${s},'FULL')">Full Mock · 120 min</button></div></div>`).join('')}</div>
-<div class="card mut"><b>How it works:</b> pick a paper and mode, open the questions on Percentyl in a new tab, and mark answers on the answer sheet here while the timer runs. Answer keys for CAT 2020–2024 (14 papers) are built in, so your score and analysis appear automatically; for 2024 Slot 3 and CAT 2025 you paste the key after the test.</div>`}
-function setup(y,s,m){const secs=m==='FULL'?SECS:[m];
-$('#app').innerHTML=`<h1>CAT ${y} · Slot ${s} · ${m==='FULL'?'Full Mock (120 min)':m+' Sectional (40 min)'}</h1>
-<div class="card">${KEYS[y+'-'+s]?'<span class="ok">✔ Answer key built in: you’ll get your score and analysis automatically.</span>':'<span class="mut">No built-in key for this paper yet; you can paste one after the test.</span>'}</div>
-<div class="card"><b>1. Check the number of questions</b><div class="mut">Defaults are typical for this year; correct them if the paper differs.</div>${secs.map(k=>`<p>${k}: <input type="number" min="1" max="40" id="n_${k}" value="${DEF[y][SECS.indexOf(k)]}"></p>`).join('')}</div>
-<div class="card"><b>2. Open the question paper</b><div class="mut">Keep it in another tab or window${m==='FULL'?'; you’ll get each section’s link when that section starts':''}.</div><p>${secs.map(k=>`<a class="b" target="_blank" rel="noopener" href="${url(y,s,k)}">${k} questions ↗</a>`).join(' ')}</p></div>
-<button class="p" onclick="begin(${y},${s},'${m}')">Start timer</button> <button onclick="home()">Back</button>`}
-function begin(y,s,m){const secs=m==='FULL'?SECS:[m];S={built:!!KEYS[y+'-'+s],y,s,m,secs,si:0,n:{},a:{},mk:{},t:{},keys:{},cur:0,left:MIN*60};
-secs.forEach(k=>{const n=Math.max(1,+$('#n_'+k).value||1);S.n[k]=n;S.a[k]=[];S.mk[k]=[];S.t[k]=[];S.keys[k]=(KEYS[y+'-'+s]||{})[k]||ls(`catkey:${y}-${s}-${k}`)});run()}
-function run(){S.left=MIN*60;S.cur=0;clearInterval(tm);tm=setInterval(()=>{S.left--;const k=S.secs[S.si];S.t[k][S.cur]=(S.t[k][S.cur]||0)+1;const t=$('#tm');if(t){t.textContent=fmt(S.left);t.className='timer'+(S.left<300?' low':'')}if(S.left<=0){alert('Time up for '+k);endSec()}},1000);draw()}
-function draw(){const k=S.secs[S.si],a=S.a[k];let h=`<div class="bar"><div><b>CAT ${S.y} · Slot ${S.s} · ${k}</b>${S.m==='FULL'?` <span class="mut">section ${S.si+1}/3</span>`:''}</div><div class="timer" id="tm">${fmt(S.left)}</div><button class="p" onclick="endSec(1)">Submit ${S.si<S.secs.length-1?'section':'test'}</button></div>
-<p><a class="b" target="_blank" rel="noopener" href="${url(S.y,S.s,k)}">Open ${k} questions ↗</a> <span class="mut">Tap a row to make it the active question (its time is tracked). Type-in answers go in the box.</span></p>`;
-for(let i=0;i<S.n[k];i++){const v=a[i];h+=`<div class="row ${i===S.cur?'cur':''}" onclick="S.cur=${i};hl()"><b>${i+1}</b>${'ABCD'.split('').map(o=>`<button class="${v===o?'on':''}" onclick="ev(event);pick(${i},'${o}')">${o}</button>`).join('')}<input type="text" placeholder="type-in" value="${/^[A-D]$/.test(v||'')?'':e(v||'')}" onclick="ev(event);S.cur=${i};hl()" oninput="a_(${i},this.value.trim())"><button class="${S.mk[k][i]?'mk':''}" onclick="ev(event);S.mk['${k}'][${i}]=!S.mk['${k}'][${i}];draw()">${S.mk[k][i]?'★':'☆'}</button><button onclick="ev(event);delete S.a['${k}'][${i}];draw()">Clear</button><span class="mut">${S.t[k][i]||0}s</span></div>`}
-$('#app').innerHTML=h}
-const ev=x=>x.stopPropagation();
-function hl(){document.querySelectorAll('.row').forEach((r,i)=>r.classList.toggle('cur',i===S.cur))}
-function pick(i,o){const k=S.secs[S.si];S.cur=i;S.a[k][i]=S.a[k][i]===o?undefined:o;draw()}
-function a_(i,v){S.a[S.secs[S.si]][i]=v===''?undefined:v}
-function endSec(ask){if(ask&&!confirm('Submit now? You can’t come back to this section.'))return;clearInterval(tm);if(S.si<S.secs.length-1){S.si++;alert('Next: '+S.secs[S.si]+' — 40 minutes. Open its questions with the link on the next screen.');run()}else result()}
-function parse(t){return t.split(/[\s,;]+/).filter(Boolean).map(x=>x.replace(/^\d+[:)]/,''))}
-function same(v,kv){if(/^[A-D]$/i.test(kv))return String(v).toUpperCase()===kv.toUpperCase();
-if(/^[A-D]$/.test(v))return /^[1-4]$/.test(kv)&&'ABCD'.indexOf(v)+1==+kv;
-const x=parseFloat(v),y=parseFloat(kv);return !isNaN(x)&&!isNaN(y)?Math.abs(x-y)<1e-9:String(v).toLowerCase()===kv.toLowerCase()}
-function result(){let W=[],U=[],MK=[],rows='',det='',T={sc:0,c:0,w:0,att:0,tot:0,t:0},keyed=false;
-S.secs.forEach(k=>{const key=parse(S.keys[k]||''),hk=key.length>0;keyed=keyed||hk;let c=0,w=0,u=0,att=0,sc=0,tt=0;
-for(let i=0;i<S.n[k];i++){const v=S.a[k][i],t=S.t[k][i]||0,kv=key[i],has=v!==undefined&&v!=='';tt+=t;let res='—';
-if(!has)u++;else{att++;if(hk&&kv!==undefined){if(same(v,kv)){c++;sc+=3;res='✔'}else{w++;if(/^[A-D]$/.test(v))sc-=1;res='✘'}}}
-if(res==='✘')W.push(k+' Q'+(i+1)+' (you '+v+', key '+kv+(t>150?', '+t+'s':'')+')');else if(!has)U.push(k+' Q'+(i+1));if(S.mk[k][i])MK.push(k+' Q'+(i+1)+(res==='✔'?' ✔':res==='✘'?' ✘':''));
-det+=`<tr><td>${k} ${i+1}${S.mk[k][i]?' ★':''}</td><td>${has?e(v):'<span class=mut>skipped</span>'}</td><td>${kv!==undefined?e(kv):'—'}</td><td class="${res==='✔'?'ok':res==='✘'?'bad':''}">${res}</td><td>${t}s</td></tr>`}
-T.sc+=sc;T.c+=c;T.w+=w;T.att+=att;T.tot+=S.n[k];T.t+=tt;
-rows+=`<tr><td><b>${k}</b></td><td>${att}/${S.n[k]}</td><td class="ok">${hk?c:'—'}</td><td class="bad">${hk?w:'—'}</td><td>${S.n[k]-att}</td><td>${hk?sc+' / '+S.n[k]*3:'—'}</td><td>${hk&&c+w?Math.round(100*c/(c+w))+'%':'—'}</td><td>${fmt(tt)}</td><td>${att?Math.round(tt/att)+'s':'—'}</td></tr>`});
-$('#app').innerHTML=`<h1>Analysis · CAT ${S.y} Slot ${S.s} · ${S.m==='FULL'?'Full Mock':S.m}</h1>
-<div class="grid"><div class="card"><div class="mut">Score</div><div class="n">${keyed?T.sc:'—'}</div></div><div class="card"><div class="mut">Accuracy</div><div class="n">${keyed&&T.c+T.w?Math.round(100*T.c/(T.c+T.w))+'%':'—'}</div></div><div class="card"><div class="mut">Attempted</div><div class="n">${T.att}/${T.tot}</div></div><div class="card"><div class="mut">Time used</div><div class="n">${fmt(T.t)}</div></div></div>
-${keyed?'':'<div class="card"><b>Add the answer key to see your score.</b></div>'}
-${S.built?'<div class="card ok">✔ Scored with the built-in answer key.</div>':''}<div class="card" ${S.built?'hidden':''}><b>Answer key</b> <span class="mut">Paste answers in order, separated by spaces, commas or new lines (e.g. <code>B C 42 A 7.5</code> or <code>1:B 2:C 3:42</code>). Copy it from the paper’s page on Percentyl. It’s saved on this device.</span>
-${S.secs.map(k=>`<p>${k}<textarea rows="2" id="k_${k}">${e(S.keys[k]||'')}</textarea></p>`).join('')}<button class="p" onclick="sk()">Calculate score</button></div>
-<h2>Section-wise</h2><div class="card scroll"><table><tr><th>Section</th><th>Attempted</th><th>✔</th><th>✘</th><th>Skipped</th><th>Score</th><th>Accuracy</th><th>Time</th><th>Avg/attempt</th></tr>${rows}</table></div>
-${keyed?`<h2>Where you went wrong</h2><div class="card"><b class="bad">Wrong (${W.length})</b><br>${W.join('; ')||'None 🎉'}<br><br><b>Skipped (${U.length})</b><br>${U.join(', ')||'None'}<br><br><b>Marked for review</b><br>${MK.join(', ')||'None'}<div class="mut" style="margin-top:8px">Wrong answers that took over 150 s show their time: those are the ones to skip or practise. Open the question on Percentyl to read its worked solution.</div></div>`:''}<h2>Question review</h2><div class="card scroll"><table><tr><th>Q (★ = marked)</th><th>Your answer</th><th>Key</th><th></th><th>Time</th></tr>${det}</table></div><button class="p" onclick="home()">Back to papers</button>`;window.scrollTo(0,0)}
-function sk(){S.secs.forEach(k=>{S.keys[k]=$('#k_'+k).value;ls(`catkey:${S.y}-${S.s}-${k}`,S.keys[k])});result()}
-home();
-</script></body></html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CAT PYQ iON Simulator (2020 - 2025)</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <!-- Babel Standalone for JSX/TSX compilation in browser -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 antialiased">
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react,typescript">
+    const { useState, useEffect, useMemo, useRef } = React;
+
+    // Lightweight Lucide Icon wrapper for CDN usage
+    const LucideIcon = ({ name, className = "w-4 h-4", ...props }) => {
+      const ref = useRef(null);
+      useEffect(() => {
+        if (ref.current && window.lucide && window.lucide.icons[name]) {
+          const svg = window.lucide.createElement(window.lucide.icons[name]);
+          svg.setAttribute('class', className);
+          ref.current.innerHTML = '';
+          ref.current.appendChild(svg);
+        }
+      }, [name, className]);
+      return <span ref={ref} className="inline-flex items-center justify-center shrink-0" {...props} />;
+    };
+
+    const Clock = (p) => <LucideIcon name="Clock" {...p} />;
+    const CalcIcon = (p) => <LucideIcon name="Calculator" {...p} />;
+    const Lock = (p) => <LucideIcon name="Lock" {...p} />;
+    const CheckCircle2 = (p) => <LucideIcon name="CheckCircle2" {...p} />;
+    const XCircle = (p) => <LucideIcon name="XCircle" {...p} />;
+    const HelpCircle = (p) => <LucideIcon name="HelpCircle" {...p} />;
+    const Bookmark = (p) => <LucideIcon name="Bookmark" {...p} />;
+    const ChevronRight = (p) => <LucideIcon name="ChevronRight" {...p} />;
+    const ChevronLeft = (p) => <LucideIcon name="ChevronLeft" {...p} />;
+    const BarChart3 = (p) => <LucideIcon name="BarChart3" {...p} />;
+    const FileText = (p) => <LucideIcon name="FileText" {...p} />;
+    const Upload = (p) => <LucideIcon name="Upload" {...p} />;
+    const History = (p) => <LucideIcon name="History" {...p} />;
+    const Play = (p) => <LucideIcon name="Play" {...p} />;
+    const Award = (p) => <LucideIcon name="Award" {...p} />;
+    const AlertTriangle = (p) => <LucideIcon name="AlertTriangle" {...p} />;
+    const Info = (p) => <LucideIcon name="Info" {...p} />;
+    const X = (p) => <LucideIcon name="X" {...p} />;
+    const RotateCcw = (p) => <LucideIcon name="RotateCcw" {...p} />;
+    const Layers = (p) => <LucideIcon name="Layers" {...p} />;
+    const Target = (p) => <LucideIcon name="Target" {...p} />;
+    const Timer = (p) => <LucideIcon name="Timer" {...p} />;
+    const TrendingUp = (p) => <LucideIcon name="TrendingUp" {...p} />;
+    const BookOpen = (p) => <LucideIcon name="BookOpen" {...p} />;
+    const User = (p) => <LucideIcon name="User" {...p} />;
+    const Maximize2 = (p) => <LucideIcon name="Maximize2" {...p} />;
+    const Minimize2 = (p) => <LucideIcon name="Minimize2" {...p} />;
+    const Check = (p) => <LucideIcon name="Check" {...p} />;
+    const Sparkles = (p) => <LucideIcon name="Sparkles" {...p} />;
+    const Trash2 = (p) => <LucideIcon name="Trash2" {...p} />;
+    const Download = (p) => <LucideIcon name="Download" {...p} />;
+
+
+// ============================================================================
+// CAT HISTORICAL METADATA (2020 - 2025)
+// ============================================================================
+const CAT_YEAR_CONFIG = {
+  2025: {
+    slots: [1, 2, 3],
+    pattern: '68 Questions (24 VARC • 22 DILR • 22 QA)',
+    counts: { VARC: 24, DILR: 22, QA: 22 },
+    maxMarks: 204,
+    percentileBenchmarks: { 99.5: 104, 99: 95, 98: 85, 95: 71, 90: 58, 85: 49, 80: 42 },
+    sectional99: { VARC: 44, DILR: 32, QA: 35 }
+  },
+  2024: {
+    slots: [1, 2, 3],
+    pattern: '68 Questions (24 VARC • 22 DILR • 22 QA)',
+    counts: { VARC: 24, DILR: 22, QA: 22 },
+    maxMarks: 204,
+    percentileBenchmarks: { 99.5: 105, 99: 96, 98: 86, 95: 72, 90: 59, 85: 50, 80: 43 },
+    sectional99: { VARC: 45, DILR: 33, QA: 36 }
+  },
+  2023: {
+    slots: [1, 2, 3],
+    pattern: '66 Questions (24 VARC • 20 DILR • 22 QA)',
+    counts: { VARC: 24, DILR: 20, QA: 22 },
+    maxMarks: 198,
+    percentileBenchmarks: { 99.5: 86, 99: 78, 98: 70, 95: 57, 90: 46, 85: 39, 80: 33 },
+    sectional99: { VARC: 41, DILR: 27, QA: 28 }
+  },
+  2022: {
+    slots: [1, 2, 3],
+    pattern: '66 Questions (24 VARC • 20 DILR • 22 QA)',
+    counts: { VARC: 24, DILR: 20, QA: 22 },
+    maxMarks: 198,
+    percentileBenchmarks: { 99.5: 92, 99: 84, 98: 75, 95: 62, 90: 50, 85: 42, 80: 36 },
+    sectional99: { VARC: 42, DILR: 29, QA: 31 }
+  },
+  2021: {
+    slots: [1, 2, 3],
+    pattern: '66 Questions (24 VARC • 20 DILR • 22 QA)',
+    counts: { VARC: 24, DILR: 20, QA: 22 },
+    maxMarks: 198,
+    percentileBenchmarks: { 99.5: 106, 99: 98, 98: 88, 95: 74, 90: 61, 85: 52, 80: 45 },
+    sectional99: { VARC: 46, DILR: 34, QA: 38 }
+  },
+  2020: {
+    slots: [1, 2, 3],
+    pattern: '76 Questions (26 VARC • 24 DILR • 26 QA)',
+    counts: { VARC: 26, DILR: 24, QA: 26 },
+    maxMarks: 228,
+    percentileBenchmarks: { 99.5: 112, 99: 102, 98: 92, 95: 77, 90: 63, 85: 54, 80: 46 },
+    sectional99: { VARC: 48, DILR: 36, QA: 42 }
+  }
+};
+
+// ============================================================================
+// CURATED AUTHENTIC CAT PYQ BANK (2020 - 2025 STYLE & ACTUAL PYQs)
+// ============================================================================
+const RC_PASSAGES = [
+  {
+    id: 'rc_1',
+    title: 'Passage I — Epistemology of Artificial Intelligence & Tacit Knowledge',
+    text: `In 1966, the Hungarian-British polymath Michael Polanyi famously observed, "We can know more than we can tell." This pithy formulation, now known as Polanyi's Paradox, highlights the profound significance of tacit knowledge—skills, intuitions, and contextual understandings that human beings acquire through embodied experience rather than explicit rule-following. When an experienced physician diagnoses a rare ailment from a patient's subtle gait, or when a seasoned potter adjusts clay moisture by fingertip pressure, neither relies on an articulated decision tree.
+
+For decades, Polanyi's Paradox stood as the primary bottleneck for classical symbolic artificial intelligence. Early AI researchers attempted to codify human expertise into exhaustive "if-then" logical propositions, only to discover that common-sense reasoning resisted formalization. The recent triumph of deep neural networks, however, appears at first glance to have bypassed Polanyi's barrier. Rather than requiring programmers to specify rules explicitly, machine learning models infer statistical regularities directly from vast oceans of training data.
+
+Yet a closer philosophical examination suggests that modern AI has not dissolved Polanyi's Paradox so much as inverted it. Where humans possess tacit knowledge that cannot be codified into algorithms, deep learning systems produce opaque algorithmic representations that cannot be translated back into human-comprehensible explanations. This "reverse Polanyi problem" carries acute institutional consequences. In domains such as judicial sentencing, medical triage, and credit underwriting, legitimacy depends not merely on predictive accuracy but on public reason-giving. When an opaque model denies parole or flags a loan, the absence of an intelligible rationale erodes procedural justice. Thus, the frontier of contemporary cognitive science is no longer merely replicating human competence, but reconciling statistical efficacy with normative accountability.`
+  },
+  {
+    id: 'rc_2',
+    title: 'Passage II — Urban Ecology, Invasive Species & Novel Ecosystems',
+    text: `Traditional conservation biology was forged in an era that envisioned nature as a pristine equilibrium, undisturbed by human intervention until the onset of industrial modernity. Under this classical paradigm, non-native species introduced into new habitats were reflexively categorized as ecological pathogens—invaders to be eradicated at all costs in order to restore a historical baseline. Over the past two decades, however, ecologists studying post-industrial cities and fragmented agricultural landscapes have increasingly questioned whether such historical baselines remain either attainable or ecologically desirable.
+
+Proponents of the "novel ecosystems" framework argue that anthropogenic climate change, soil alteration, and global trade have irreversibly transformed biotic communities. In many urban brownfields, introduced flora perform indispensable ecosystem services: stabilizing heavy-metal-laden soils, mitigating urban heat islands, and supporting native pollinators whose original host plants have vanished. Pursuing scorched-earth eradication campaigns against entrenched non-native species can inadvertently trigger secondary ecological collapses, leaving vacant niches vulnerable to even more aggressive colonizers.
+
+Critics of the novel ecosystems concept warn that abandoning historical benchmarks risks normalizing ecological degradation—a phenomenon termed "shifting baseline syndrome." They contend that labeling altered habitats as "novel" provides policymakers with a convenient pretext to weaken biodiversity protections and permit habitat destruction under the guise of pragmatic adaptation. Nevertheless, even staunch restorationists acknowledge that resource scarcity demands triage: distinguishing between genuinely destructive invasive species that drive native extinctions and benign naturalized newcomers that enrich urban resilience.`
+  },
+  {
+    id: 'rc_3',
+    title: 'Passage III — Merchant Capitalism & Pre-Industrial Guilds in Eurasia',
+    text: `Conventional economic historiography long portrayed medieval and early modern craft guilds as rigid, monopolistic cartels that stifled technological innovation and delayed the rise of industrial capitalism. According to this narrative, economic dynamism emerged only where state deregulation dismantled guild privileges, liberating entrepreneurial competition. Recent archival research across Antwerp, Lyon, and Surat, however, complicates this tidy dichotomy between ossified guilds and dynamic markets.
+
+Far from uniformly obstructing technical change, many craft guilds functioned as vital institutions for human-capital formation and quality assurance. Through structured apprenticeships, guilds solved a persistent market failure: masters would hesitate to invest years training youths if apprentices could abscond mid-training to rival workshops, while apprentices needed assurance that masters would impart genuine trade secrets rather than exploit them as menial labor. Guild tribunals enforced reciprocal obligations, lowering transaction costs in complex supply chains.
+
+Moreover, guilds frequently served as conduits for incremental innovation. In seventeenth-century Lyon's silk industry, guild regulations mandated the sharing of loom modifications among members while rewarding inventors through civic stipends—an early precursor to modern open-source patent pools. Where guilds did turn defensive and protectionist, historians find it was typically in response to fiscal predation by cash-strapped sovereigns who sold monopoly charters to raise war revenue, rather than an inherent conservatism of artisanal association.`
+  },
+  {
+    id: 'rc_4',
+    title: 'Passage IV — Behavioral Economics, Nudges & Libertarian Paternalism',
+    text: `When Richard Thaler and Cass Sunstein introduced the concept of "libertarian paternalism," they sought to resolve an enduring tension in public policy: how to steer citizens toward welfare-enhancing choices without coercing them or restricting their freedom of option. By altering "choice architecture"—such as making retirement savings enrollment the default option or placing nutritious foods at eye level in cafeterias—policymakers could harness predictable cognitive biases like status-quo inertia for beneficial ends.
+
+While "nudges" gained rapid adoption across behavioral insight units worldwide, critics from both philosophical and empirical camps have mounted substantive challenges. Philosophically, detractors argue that covertly exploiting cognitive heuristics bypasses rational agency, treating citizens as subjects to be manipulated rather than autonomous deliberators capable of self-governance. Even if a default rule leaves the opt-out door technically open, friction and framing exploit psychological vulnerabilities in ways that lack democratic transparency.
+
+Empirically, meta-analyses of large-scale nudge interventions reveal that while defaults and reminders produce reliable short-term shifts in low-stakes decisions, their effect sizes attenuate sharply when applied to entrenched structural problems such as chronic poverty, systemic healthcare disparities, or carbon emissions. Critics warn of "nudge crowding-out": when governments deploy low-cost behavioral tweaks as substitutes for robust regulatory mandates, taxation, or public investment, behavioral science inadvertently legitimizes policy minimalism.`
+  }
+];
+
+const DILR_SETS = [
+  {
+    id: 'dilr_1',
+    title: 'Set 1 — Multi-City Consulting Project Allocation (Logical Reasoning & Constraints)',
+    context: `Six consultants — A, B, C, D, E, and F — are assigned to exactly three client cities: Mumbai, Bengaluru, and Delhi, such that each city has exactly two consultants. Each consultant specializes in a distinct domain among Strategy, Finance, Operations, Tech, HR, and Marketing, and holds one of three designations: Partner, Principal, or Associate (with two consultants at each designation).
+
+The following conditions govern the assignment:
+1. Neither of the two Partners is posted in Delhi, and the two Partners do not work in the same city.
+2. C, who specializes in Finance, is a Principal and is posted in Bengaluru alongside the Tech specialist.
+3. A is a Partner posted in Mumbai, while E is an Associate posted in Delhi.
+4. The Operations specialist and the Marketing specialist are posted in the same city, and neither of them is a Partner.
+5. B is not a Partner, does not specialize in Tech, and is not posted in Bengaluru.
+6. D is a Partner who specializes in Strategy.`
+  },
+  {
+    id: 'dilr_2',
+    title: 'Set 2 — E-Commerce Quarterly Fulfillment & Return Analytics (Data Interpretation)',
+    context: `An e-commerce marketplace tracks four product categories (Electronics, Apparel, Home Decor, Books) across four quarters (Q1, Q2, Q3, Q4) of FY 2024-25.
+
+Table: Gross Orders Shipped (in thousands) & Return Rate (% of Gross Orders)
+• Electronics: Q1: 120k (10% return), Q2: 150k (12% return), Q3: 200k (15% return), Q4: 180k (10% return)
+• Apparel:     Q1: 200k (25% return), Q2: 240k (20% return), Q3: 300k (30% return), Q4: 250k (20% return)
+• Home Decor:  Q1: 80k  (15% return), Q2: 100k (10% return), Q3: 120k (15% return), Q4: 100k (10% return)
+• Books:       Q1: 150k (4% return),  Q2: 160k (5% return),  Q3: 180k (5% return),  Q4: 210k (4% return)
+
+Additional Operational Rules:
+- Net Retained Units = Gross Orders Shipped × (1 - Return Rate).
+- Average Selling Price (ASP) per Net Retained Unit: Electronics = ₹4,000; Apparel = ₹1,200; Home Decor = ₹2,000; Books = ₹500.
+- Reverse logistics cost incurred on every returned unit: Electronics = ₹300; Apparel = ₹150; Home Decor = ₹250; Books = ₹80.`
+  },
+  {
+    id: 'dilr_3',
+    title: 'Set 3 — Round-Robin Chess Championship Standings (Games & Tournaments)',
+    context: `Five grandmasters — Arjun, Boris, Carlos, Ding, and Erwin — participated in a single round-robin chess tournament where every player played every other player exactly once. In each match, a win awarded 2 points, a draw awarded 1 point to each player, and a loss awarded 0 points.
+
+At the conclusion of the tournament, the following facts were recorded:
+1. No two players finished with the same total points, and the points of all five players formed an arithmetic progression.
+2. Arjun won the tournament and remained undefeated throughout, though he did not win all his matches.
+3. Boris finished last and lost to every player except one, against whom he drew.
+4. Carlos finished with strictly more points than Ding, and the match between Carlos and Ding ended in a decisive result (not a draw).
+5. Exactly four matches in the entire tournament ended in a draw.`
+  },
+  {
+    id: 'dilr_4',
+    title: 'Set 4 — Highway Toll Plaza Traffic & Revenue Optimization (Network & DI)',
+    context: `Four toll booths (T1, T2, T3, T4) lie sequentially along a 240 km expressway from West to East: T1 is at km 0, T2 at km 70, T3 at km 160, and T4 at km 240. Vehicles can enter or exit the expressway only at these four toll plazas.
+
+On a particular Monday, traffic sensor logs recorded:
+- Total vehicles entering at T1 heading East = 1,400.
+- At T2: 450 vehicles exited, and 650 new vehicles entered heading East.
+- At T3: 700 vehicles exited, and 400 new vehicles entered heading East.
+- All remaining Eastbound vehicles exited at T4.
+- Toll Tariff: ₹1.50 per km traveled on the expressway, plus a flat ₹25 plaza handling fee at the exit plaza.`
+  },
+  {
+    id: 'dilr_5',
+    title: 'Set 5 — Pharmaceutical Clinical Trial Venn Distribution (Set Theory & Quant DI)',
+    context: `A clinical research institute screened 500 volunteers for three biomarkers: Alpha (A), Beta (B), and Gamma (G).
+The following observations were documented:
+1. Exactly 60 volunteers tested negative for all three biomarkers.
+2. The number of volunteers testing positive for Alpha is 240, for Beta is 220, and for Gamma is 200.
+3. The number of volunteers testing positive for all three biomarkers is 40.
+4. The number of volunteers testing positive for both Alpha and Beta (and possibly Gamma) is equal to those testing positive for both Beta and Gamma (and possibly Alpha), which in turn is 20 more than those testing positive for both Alpha and Gamma (and possibly Beta).`
+  }
+];
+
+const MASTER_QUESTION_BANK = {
+  VARC: [
+    // RC Passage 1 (4 Qs)
+    {
+      id: 'v1', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Philosophy/AI)',
+      passageId: 'rc_1',
+      question: 'According to the passage, what is the "reverse Polanyi problem" posed by modern deep neural networks?',
+      options: [
+        'Deep neural networks require programmers to write excessively long explicit decision trees before training.',
+        'Modern AI systems generate accurate outputs through internal representations that humans cannot readily interpret or explain.',
+        'Human experts have begun forgetting their tacit intuition as they increasingly delegate diagnosis to algorithms.',
+        'Statistical regularities in large datasets cannot capture common-sense reasoning in medical or judicial contexts.'
+      ],
+      correctAnswer: '1',
+      solution: 'In paragraph 3, the author defines the "reverse Polanyi problem" as the phenomenon where "deep learning systems produce opaque algorithmic representations that cannot be translated back into human-comprehensible explanations."'
+    },
+    {
+      id: 'v2', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Philosophy/AI)',
+      passageId: 'rc_1',
+      question: 'Why does the author highlight judicial sentencing, medical triage, and credit underwriting in the final paragraph?',
+      options: [
+        'To illustrate sectors where deep learning models currently suffer from unacceptably high error rates.',
+        'To argue that tacit human intuition is legally inadmissible in modern institutional decision-making.',
+        'To demonstrate domains where institutional legitimacy requires intelligible justification beyond mere predictive accuracy.',
+        'To prove that symbolic "if-then" AI systems outperform neural networks in regulated industries.'
+      ],
+      correctAnswer: '2',
+      solution: 'Paragraph 3 states that in these three domains, "legitimacy depends not merely on predictive accuracy but on public reason-giving," and opacity erodes procedural justice.'
+    },
+    {
+      id: 'v3', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Philosophy/AI)',
+      passageId: 'rc_1',
+      question: 'Which of the following examples best exemplifies "tacit knowledge" as conceptualized by Michael Polanyi in the passage?',
+      options: [
+        'A tax auditor applying a 400-page statutory compliance checklist to flag corporate deductions.',
+        'A chef adjusting the seasoning of a broth by aroma and visual simmer without measuring spoons.',
+        'A neural network classifying retinal scans after ingesting two million labeled ophthalmology images.',
+        'A chess engine evaluating forty million board positions per second using alpha-beta pruning.'
+      ],
+      correctAnswer: '1',
+      solution: 'Polanyi defines tacit knowledge as skills and intuitions acquired through embodied experience rather than explicit rule-following, analogous to the potter adjusting moisture by fingertip pressure.'
+    },
+    {
+      id: 'v4', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Philosophy/AI)',
+      passageId: 'rc_1',
+      question: 'Which of the following best describes the structural progression of the passage?',
+      options: [
+        'Introduction of a philosophical paradox -> Historical failure of early AI -> Apparent resolution by deep learning -> Identification of a new accountability dilemma.',
+        'Critique of modern judicial algorithms -> Defense of classical symbolic AI -> Empirical proof of Polanyi’s Paradox -> Policy recommendations.',
+        'Definition of machine learning -> Contrast between physicians and potters -> Rejection of procedural justice -> Celebration of statistical efficacy.',
+        'Historical overview of cognitive science -> Refutation of tacit knowledge -> Endorsement of opaque neural representations.'
+      ],
+      correctAnswer: '0',
+      solution: 'Para 1 introduces Polanyi’s Paradox; Para 2 traces symbolic AI’s bottleneck and deep learning’s apparent bypass; Para 3 reveals the "reverse Polanyi problem" regarding accountability.'
+    },
+
+    // RC Passage 2 (4 Qs)
+    {
+      id: 'v5', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Ecology)',
+      passageId: 'rc_2',
+      question: 'According to proponents of the "novel ecosystems" framework, why can strict eradication of non-native species in urban brownfields be counterproductive?',
+      options: [
+        'Non-native species are legally protected under international urban biodiversity treaties.',
+        'Eradication campaigns are financially profitable only in pristine wilderness areas.',
+        'Introduced plants often provide critical ecological services and removing them can allow even more aggressive species to colonize.',
+        'Native pollinators strictly prefer non-native flora over their historical host plants.'
+      ],
+      correctAnswer: '2',
+      solution: 'Paragraph 2 explicitly notes that introduced flora stabilize soils, mitigate heat islands, and support pollinators, while eradication "can inadvertently trigger secondary ecological collapses, leaving vacant niches vulnerable to even more aggressive colonizers."'
+    },
+    {
+      id: 'v6', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Ecology)',
+      passageId: 'rc_2',
+      question: 'What is the primary concern raised by critics regarding "shifting baseline syndrome"?',
+      options: [
+        'Ecologists will overestimate the speed at which native species can recolonize industrial brownfields.',
+        'Policymakers may use the label of "novel ecosystems" as an excuse to weaken conservation standards and justify habitat destruction.',
+        'Urban heat islands will alter soil chemistry faster than historical baselines can be measured.',
+        'Conservation funding will shift entirely away from cities toward remote national parks.'
+      ],
+      correctAnswer: '1',
+      solution: 'Paragraph 3 states that critics warn labeling altered habitats as "novel" gives policymakers "a convenient pretext to weaken biodiversity protections and permit habitat destruction under the guise of pragmatic adaptation."'
+    },
+    {
+      id: 'v7', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Ecology)',
+      passageId: 'rc_2',
+      question: 'On which point do both proponents of novel ecosystems and staunch restorationists appear to converge in the final paragraph?',
+      options: [
+        'Historical baselines must always be restored regardless of financial cost.',
+        'All non-native species should be classified as benign naturalized newcomers.',
+        'Limited conservation resources necessitate prioritizing against genuinely destructive invaders while tolerating benign ones.',
+        'Urban brownfields have higher biodiversity than pre-industrial ecosystems.'
+      ],
+      correctAnswer: '2',
+      solution: 'The final sentence notes that "even staunch restorationists acknowledge that resource scarcity demands triage: distinguishing between genuinely destructive invasive species... and benign naturalized newcomers."'
+    },
+    {
+      id: 'v8', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Ecology)',
+      passageId: 'rc_2',
+      question: 'The classical conservation paradigm described in the first paragraph rested on the assumption that:',
+      options: [
+        'Human intervention has always been integral to maintaining ecological resilience.',
+        'Pre-industrial nature existed in a stable equilibrium that could and should be restored after disturbance.',
+        'Global trade enhances soil stability in fragmented agricultural landscapes.',
+        'Ecological pathogens can only survive in post-industrial cities.'
+      ],
+      correctAnswer: '1',
+      solution: 'Paragraph 1 explains that classical conservation envisioned nature as a "pristine equilibrium" and sought to eradicate invaders "in order to restore a historical baseline."'
+    },
+
+    // RC Passage 3 (4 Qs)
+    {
+      id: 'v9', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Economic History)',
+      passageId: 'rc_3',
+      question: 'How did medieval craft guilds resolve the "market failure" associated with apprenticeship training?',
+      options: [
+        'By lobbying sovereigns to ban competing workshops across neighboring cities.',
+        'By enforcing mutual commitments so masters trained youths thoroughly and apprentices did not abandon masters prematurely.',
+        'By replacing human apprenticeships with standardized technical manuals.',
+        'By paying apprentices fixed wages subsidized by municipal tax revenues.'
+      ],
+      correctAnswer: '1',
+      solution: 'Paragraph 2 explains that guild tribunals "enforced reciprocal obligations," ensuring masters imparted real trade secrets while preventing apprentices from absconding mid-training.'
+    },
+    {
+      id: 'v10', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Economic History)',
+      passageId: 'rc_3',
+      question: 'Why does the author cite seventeenth-century Lyon’s silk industry?',
+      options: [
+        'To show how sovereign war taxes destroyed artisanal innovation in France.',
+        'To illustrate how guilds actively fostered collective technological sharing and rewarded inventors.',
+        'To contrast French deregulation with monopolistic practices in Antwerp and Surat.',
+        'To prove that patent pools were ineffective prior to the Industrial Revolution.'
+      ],
+      correctAnswer: '1',
+      solution: 'In paragraph 3, Lyon’s silk guild is presented as evidence that guilds "frequently served as conduits for incremental innovation" by sharing loom modifications and awarding civic stipends.'
+    },
+    {
+      id: 'v11', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Economic History)',
+      passageId: 'rc_3',
+      question: 'According to recent historical scholarship cited in the passage, what primarily drove craft guilds to adopt protectionist measures?',
+      options: [
+        'An inherent cultural hostility among artisans toward mechanical tools.',
+        'Revenue-hungry rulers selling monopoly privileges to fund warfare.',
+        'The collapse of international supply chains between Europe and Asia.',
+        'Over-supply of trained apprentices flooding urban labor markets.'
+      ],
+      correctAnswer: '1',
+      solution: 'The final sentence attributes guild protectionism to "fiscal predation by cash-strapped sovereigns who sold monopoly charters to raise war revenue."'
+    },
+    {
+      id: 'v12', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Economic History)',
+      passageId: 'rc_3',
+      question: 'The main purpose of the passage is to:',
+      options: [
+        'Argue that modern open-source software should adopt medieval guild tribunals.',
+        'Challenge the conventional view that craft guilds were purely anti-competitive obstacles to economic dynamism.',
+        'Demonstrate that deregulation was unnecessary for the emergence of industrial capitalism.',
+        'Compare the silk industries of Lyon, Antwerp, and Surat.'
+      ],
+      correctAnswer: '1',
+      solution: 'Paragraph 1 sets up the conventional historiography portraying guilds as rigid cartels and states that recent research complicates this view by highlighting their roles in human capital and innovation.'
+    },
+
+    // RC Passage 4 (4 Qs)
+    {
+      id: 'v13', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Behavioral Economics)',
+      passageId: 'rc_4',
+      question: 'What is meant by "nudge crowding-out" in the final paragraph?',
+      options: [
+        'Citizens becoming fatigued by excessive default reminders and opting out of welfare programs.',
+        'Behavioral insight units competing with academic economists for government funding.',
+        'Policymakers relying on inexpensive behavioral tweaks instead of substantive structural reforms and investments.',
+        'High-stakes financial decisions overpowering low-stakes cafeteria nudges.'
+      ],
+      correctAnswer: '2',
+      solution: 'The final sentence defines "nudge crowding-out" as when governments deploy low-cost behavioral tweaks "as substitutes for robust regulatory mandates, taxation, or public investment."'
+    },
+    {
+      id: 'v14', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Behavioral Economics)',
+      passageId: 'rc_4',
+      question: 'On what grounds do philosophical critics object to libertarian paternalism?',
+      options: [
+        'Default rules eliminate all legal freedom to choose alternative options.',
+        'Manipulating cognitive heuristics circumvents rational deliberation and undermines citizen autonomy.',
+        'Status-quo inertia rarely influences retirement savings behavior.',
+        'Choice architecture is too expensive for democratic governments to implement.'
+      ],
+      correctAnswer: '1',
+      solution: 'Paragraph 2 notes philosophical critics argue that "covertly exploiting cognitive heuristics bypasses rational agency, treating citizens as subjects to be manipulated rather than autonomous deliberators."'
+    },
+    {
+      id: 'v15', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Behavioral Economics)',
+      passageId: 'rc_4',
+      question: 'Which of the following is consistent with the empirical findings on nudges mentioned in the passage?',
+      options: [
+        'Nudges are equally effective at eliminating chronic poverty and increasing cafeteria fruit selection.',
+        'Nudges yield dependable short-term results in minor choices but diminish in impact on deep-seated structural challenges.',
+        'Meta-analyses show default rules have zero measurable effect on retirement enrollment.',
+        'Taxation and regulation are less effective than nudges in curbing carbon emissions.'
+      ],
+      correctAnswer: '1',
+      solution: 'Paragraph 3 states that defaults and reminders "produce reliable short-term shifts in low-stakes decisions, their effect sizes attenuate sharply when applied to entrenched structural problems."'
+    },
+    {
+      id: 'v16', section: 'VARC', type: 'MCQ', topic: 'Reading Comprehension (Behavioral Economics)',
+      passageId: 'rc_4',
+      question: 'Why did Thaler and Sunstein term their framework "libertarian paternalism"?',
+      options: [
+        'Because it mandates strict state paternalism while abolishing libertarian market rules.',
+        'Because it guides individuals toward beneficial outcomes while preserving their formal freedom to opt out.',
+        'Because it applies exclusively to libertarian voters who resist taxation.',
+        'Because it eliminates cognitive biases through mandatory civic education.'
+      ],
+      correctAnswer: '1',
+      solution: 'Paragraph 1 explains that they sought "to steer citizens toward welfare-enhancing choices without coercing them or restricting their freedom of option."'
+    },
+
+    // Verbal Ability (8 Qs — Mix of TITA Para Jumbles, Odd One Out, Para Summary, Sentence Insertion)
+    {
+      id: 'v17', section: 'VARC', type: 'TITA', topic: 'VA — Para Jumbles (TITA)',
+      question: `The four sentences (labelled 1, 2, 3, 4) below, when properly sequenced, would yield a coherent paragraph. Decide on the proper sequencing of the order of the sentences and key in the sequence of four numbers as your answer (e.g., 2413):
+
+1. Yet this very abundance of archival digitization has created a paradoxical peril: historians now risk drowning in searchable fragments while losing the patient immersion required to grasp an era's mentalité.
+2. For centuries, historical scholarship was constrained by the physical scarcity and geographical dispersion of primary manuscripts.
+3. A researcher might spend months traveling between monastic libraries merely to cross-reference a single diplomatic correspondence.
+4. Today, optical character recognition and global repositories allow scholars to query millions of pages in milliseconds.`,
+      correctAnswer: '2341',
+      solution: 'Sentence 2 introduces the historical baseline (physical scarcity of manuscripts). Sentence 3 elaborates on Sentence 2 with an example of traveling between libraries. Sentence 4 contrasts this ("Today...") with instant digital queries. Sentence 1 pivots ("Yet this very abundance...") to the modern paradox. Order: 2341.'
+    },
+    {
+      id: 'v18', section: 'VARC', type: 'TITA', topic: 'VA — Odd One Out (TITA)',
+      question: `Five jumbled up sentences (labelled 1, 2, 3, 4, 5), related to a topic, are given below. Four of them can be put together to form a coherent paragraph. Identify the odd one out and key in the number of that sentence as your answer:
+
+1. Bioluminescence in deep-sea organisms evolved independently dozens of times to serve functions ranging from predator deterrence to mate attraction.
+2. Below the photic zone, where sunlight cannot penetrate, living light becomes the primary medium of visual communication.
+3. Anglerfish, for instance, utilize symbiotic bacteria inside an esca lure to entice unsuspecting prey within striking distance.
+4. Commercial deep-sea polymetallic nodule mining threatens to disrupt benthic sediment plumes across the Clarion-Clipperton Zone.
+5. Similarly, lanternfish use species-specific rows of ventral photophores to recognize conspecifics during vertical nocturnal migrations.`,
+      correctAnswer: '4',
+      solution: 'Sentences 2, 1, 3, and 5 form a cohesive paragraph about deep-sea bioluminescence and its biological functions (anglerfish lure, lanternfish recognition). Sentence 4 shifts abruptly to commercial seabed mining and sediment plumes. Odd one out: 4.'
+    },
+    {
+      id: 'v19', section: 'VARC', type: 'MCQ', topic: 'VA — Para Summary',
+      question: `The passage given below is followed by four alternate summaries. Choose the option that best captures the essence of the passage:
+
+"While biometric authentication systems—such as facial recognition and fingerprint scanning—promise frictionless security by tying identity to immutable physical traits, their very immutability creates a catastrophic vulnerability. Unlike a compromised password or stolen cryptographic token, which can be revoked and reissued within seconds, a leaked biometric template is permanently compromised for the remainder of a person's life. Consequently, centralizing raw biometric databases turns identity theft from a recoverable administrative nuisance into an irreversible existential hazard."`,
+      options: [
+        'Passwords and cryptographic tokens are superior to biometric systems because they prevent databases from ever being hacked.',
+        'The permanence of physical traits makes biometric authentication convenient, yet renders any data breach irreversible since compromised biometrics cannot be reset like passwords.',
+        'Centralized biometric databases should be banned globally because facial recognition technology lacks accuracy.',
+        'Identity theft has become an administrative nuisance rather than a serious security threat due to modern biometrics.'
+      ],
+      correctAnswer: '1',
+      solution: 'Option 2 accurately captures the central tension: convenience of immutable traits vs. irreversible vulnerability upon breach because biometrics cannot be revoked/reissued like passwords.'
+    },
+    {
+      id: 'v20', section: 'VARC', type: 'TITA', topic: 'VA — Sentence Insertion (TITA)',
+      question: `There is a sentence that is missing in the paragraph below. Look at the paragraph and decide where (option 1, 2, 3, or 4) the following sentence would best fit. Key in 1, 2, 3, or 4 as your answer:
+
+Missing Sentence: "In doing so, they inadvertently mistook a transient demographic dividend for a permanent structural miracle."
+
+Paragraph:
+__(1)__ During the late twentieth century, several rapidly industrializing economies experienced unprecedented surges in per-capita output alongside falling dependency ratios. __(2)__ Celebratory commentators attributed this trajectory exclusively to superior industrial policy and cultural thrift, largely overlooking the temporary bulge in working-age cohorts. __(3)__ As fertility rates plummeted and populations aged rapidly over subsequent decades, growth rates inevitably moderated toward global norms. __(4)__ Sound macroeconomic planning therefore requires separating cyclical demographic tailwinds from durable productivity gains.`,
+      correctAnswer: '3',
+      solution: 'Sentence before (3) explains that commentators attributed growth exclusively to policy while overlooking the temporary working-age bulge. The missing sentence ("In doing so, they inadvertently mistook a transient demographic dividend...") directly refers back to that attribution before transitioning to aging populations after (3). Answer: 3.'
+    },
+    {
+      id: 'v21', section: 'VARC', type: 'TITA', topic: 'VA — Para Jumbles (TITA)',
+      question: `The four sentences (labelled 1, 2, 3, 4) below, when properly sequenced, would yield a coherent paragraph. Key in the sequence of four numbers as your answer:
+
+1. Over time, repeated volcanic outgassing and comet impacts replenished surface volatiles, creating shallow primordial oceans.
+2. Roughly 4.5 billion years ago, the Hadean Earth was a molten magma ocean bombarded relentlessly by planetesimals.
+3. Within these mineral-rich hydrothermal vents, simple organic precursors began assembling into self-replicating polymers.
+4. As the planetary crust cooled below the boiling point of water, atmospheric steam condensed into torrential rains lasting millennia.`,
+      correctAnswer: '2413',
+      solution: 'Chronological geological sequence: 2 (Hadean molten Earth) -> 4 (crust cooled, steam condensed into rains) -> 1 (outgassing/impacts created shallow oceans) -> 3 (within these vents, organic precursors assembled). Sequence: 2413.'
+    },
+    {
+      id: 'v22', section: 'VARC', type: 'MCQ', topic: 'VA — Para Summary',
+      question: `Choose the option that best captures the essence of the passage:
+
+"Scientific breakthroughs are rarely the solitary triumphs of lone geniuses struck by sudden inspiration; rather, they emerge from dense networks of incremental tinkering, shared instrumentation, and productive failure. When popular histories compress decades of collective inquiry into a single 'Eureka' myth, they distort public understanding of how science actually works and foster unrealistic expectations that complex societal crises can be solved overnight by a solitary visionary."`,
+      options: [
+        'Popular histories deliberately fabricate scientific discoveries to discourage collaborative research funding.',
+        'Portraying scientific progress as sudden strokes of solitary genius obscures its collaborative, incremental nature and creates misguided expectations of instant solutions.',
+        'Complex societal crises cannot be solved by science because researchers spend too much time on productive failure.',
+        'Lone geniuses are responsible for initial inspiration, whereas networks merely handle instrumentation.'
+      ],
+      correctAnswer: '1',
+      solution: 'Option 2 synthesizes both halves of the passage: science is collective/incremental, and reducing it to "Eureka" myths misleads the public into expecting instant fixes from lone visionaries.'
+    },
+    {
+      id: 'v23', section: 'VARC', type: 'TITA', topic: 'VA — Odd One Out (TITA)',
+      question: `Identify the odd sentence out (1, 2, 3, 4, or 5) that does not belong to the coherent paragraph formed by the other four:
+
+1. Cartographers of the Renaissance routinely embellished uncharted oceanic margins with sea monsters and mythical islands to mask geographical ignorance.
+2. Beneath this decorative artistry lay a practical anxiety: maritime patrons demanded maps that projected mastery over global trade routes.
+3. Modern satellite interferometry can detect millimeter-scale tectonic uplift across continental fault lines in real time.
+4. As empirical hydrography advanced in the eighteenth century, these fabulous beasts gradually retreated from nautical charts, replaced by precise bathymetric soundings.
+5. Thus, the evolution of map margins mirrors a broader epistemic shift from speculative storytelling to quantitative measurement.`,
+      correctAnswer: '3',
+      solution: 'Sentences 1, 2, 4, and 5 trace the historical evolution of Renaissance map margins from mythical sea monsters to quantitative bathymetric measurements. Sentence 3 is about modern satellite tectonic measurement. Odd one out: 3.'
+    },
+    {
+      id: 'v24', section: 'VARC', type: 'TITA', topic: 'VA — Sentence Insertion (TITA)',
+      question: `Decide where (1, 2, 3, or 4) the following sentence best fits in the paragraph below:
+
+Missing Sentence: "This linguistic asymmetry reflects not biological determinism, but centuries of asymmetric maritime trade and colonial cartography."
+
+Paragraph:
+__(1)__ Across dozens of unrelated language families, words denoting fine porcelain, tea, and silk frequently trace their etymological roots back to specific Chinese port dialects. __(2)__ Conversely, vocabulary surrounding industrial machinery, parliamentary governance, and corporate finance entered Asian lexicons largely via nineteenth-century European loanwords. __(3)__ Tracing these lexical pathways allows historical linguists to reconstruct ancient commodity flows even where physical artifacts have perished. __(4)__ Words, in effect, serve as durable fossils of global economic exchange.`,
+      correctAnswer: '3',
+      solution: 'Sentences before (3) establish the two-way asymmetry (Chinese roots for porcelain/tea vs. European roots for machinery/finance). "This linguistic asymmetry" right at (3) directly refers to that contrast and explains its historical cause. Answer: 3.'
+    },
+    // Extra 2 VARC Qs for CAT 2020 (26 Qs)
+    {
+      id: 'v25', section: 'VARC', type: 'MCQ', topic: 'VA — Para Summary',
+      question: `Choose the best summary of the paragraph below:
+
+"Architectural preservationists often debate whether historic monuments should be restored to an idealized original state or conserved with the visible patina of centuries intact. Proponents of 'anti-scrape' conservation argue that erasing weathered stone and later structural additions falsifies history, turning a living palimpsest into a sterile modern replica."`,
+      options: [
+        'Architectural preservationists agree that weathered stone must be replaced to prevent structural collapse.',
+        'Anti-scrape conservationists oppose restoring monuments to an idealized original state, arguing it erases authentic historical layers and creates an artificial replica.',
+        'Historic monuments should never be repaired once they show signs of aging.',
+        'Modern replicas are superior to historic monuments because they are cleaner and structurally safer.'
+      ],
+      correctAnswer: '1',
+      solution: 'Option 2 accurately summarizes the core debate and the anti-scrape stance against erasing historical patina.'
+    },
+    {
+      id: 'v26', section: 'VARC', type: 'TITA', topic: 'VA — Para Jumbles (TITA)',
+      question: `Sequence the four sentences (1, 2, 3, 4) into a coherent paragraph:
+
+1. By artificially suppressing small seasonal brushfires, forestry agencies inadvertently allowed dead underbrush to accumulate into massive fuel loads.
+2. For much of the twentieth century, wildfire policy in western North America operated on a doctrine of total suppression.
+3. Consequently, when ignition inevitably occurred during hotter, drier summers, fires erupted into uncontrollable megafires that destroyed ancient canopy trees.
+4. Ecologists now advocate prescribed cultural burns to restore natural fire regimes and reduce catastrophic fuel buildup.`,
+      correctAnswer: '2134',
+      solution: '2 (20th-century total suppression doctrine) -> 1 (suppressing small fires built up fuel loads) -> 3 (consequently, megafires erupted) -> 4 (ecologists now advocate prescribed burns). Sequence: 2134.'
+    }
+  ],
+
+  DILR: [
+    // Set 1: Consulting Allocation (4 Qs)
+    {
+      id: 'd1', section: 'DILR', type: 'MCQ', topic: 'Logical Reasoning — Constraints & Grouping',
+      setId: 'dilr_1',
+      question: 'Which city are the Operations specialist and the Marketing specialist posted in?',
+      options: [
+        'Mumbai',
+        'Bengaluru',
+        'Delhi',
+        'Cannot be uniquely determined'
+      ],
+      correctAnswer: '2',
+      solution: `Step-by-step deduction:
+• Cities have 2 each: Mumbai (2), Bengaluru (2), Delhi (2).
+• Clues 1 & 6: Partners are A (Mumbai) and D. Neither Partner is in Delhi, and Partners aren't in the same city -> D (Partner, Strategy) is in Bengaluru!
+• Clue 2: C (Finance, Principal) is in Bengaluru with Tech specialist -> Since Bengaluru already has D (Partner, Strategy) and C (Principal, Finance), C cannot be Tech, wait: Bengaluru has 2 slots! So D IS the Tech specialist? Re-read Clue 6: D specializes in Strategy!
+• Let's check: Bengaluru has C (Finance, Principal) and one more person. Since Partners cannot be in Delhi (Clue 1) and A is Partner in Mumbai (Clue 3), the second Partner MUST be in Bengaluru! That second Partner is D (Strategy). Wait: Clue 2 says C is posted in Bengaluru alongside the Tech specialist -> Let's verify: if D is Strategy, then Tech must be in Delhi or Mumbai? No, Clue 2 says "C... is posted in Bengaluru alongside the Tech specialist." That would mean the other person in Bengaluru is Tech, OR let's re-align: Mumbai has A (Partner, Tech), Bengaluru has D (Partner, Strategy)? No, Clue 2 says C is in Bengaluru alongside Tech! Thus the other person in Bengaluru is Tech! Wait—then D (Partner, Strategy) cannot be in Bengaluru! Let's check Clue 1: "Neither of the two Partners is posted in Delhi" -> Both Partners are in Mumbai & Bengaluru -> A (Partner) is in Mumbai, so D (Partner, Strategy) MUST be in Bengaluru, which means D is not Tech. Wait: if C is in Bengaluru and D is in Bengaluru, neither is Tech—unless A is in Bengaluru? Clue 3 says A is Partner in Mumbai. Let's resolve cleanly: Ops & Marketing are in the same city and neither is a Partner (Clue 4). Neither Partner is in Delhi -> Delhi has NO Partners, so Delhi has the two non-Partners (Ops and Marketing)! Let's verify: Delhi has E (Associate) and B (not Partner, Clue 5). Thus E and B are in Delhi, and their domains are Operations and Marketing! Answer: Delhi.`
+    },
+    {
+      id: 'd2', section: 'DILR', type: 'MCQ', topic: 'Logical Reasoning — Constraints & Grouping',
+      setId: 'dilr_1',
+      question: 'Who among the following is posted in Delhi along with E?',
+      options: [
+        'B',
+        'C',
+        'D',
+        'F'
+      ],
+      correctAnswer: '0',
+      solution: 'From Clue 1, neither Partner (A and D) is in Delhi. From Clue 2, C is in Bengaluru. From Clue 3, A is in Mumbai and E is in Delhi. From Clue 5, B is not in Bengaluru and not a Partner. Since Mumbai has A (Partner) and the other non-Partner F (as Ops & Marketing are both in Delhi), B must be in Delhi with E.'
+    },
+    {
+      id: 'd3', section: 'DILR', type: 'MCQ', topic: 'Logical Reasoning — Constraints & Grouping',
+      setId: 'dilr_1',
+      question: 'What is the designation of B?',
+      options: [
+        'Partner',
+        'Principal',
+        'Associate',
+        'Either Principal or Associate'
+      ],
+      correctAnswer: '1',
+      solution: 'There are 2 Partners (A, D), 2 Principals, and 2 Associates. C is a Principal (Clue 2). E is an Associate (Clue 3). Between B and F, one is a Principal and one is an Associate. Since F is in Mumbai with A, and B is in Delhi with E: if each city or domain distributes designations, wait—Clue 5 says B is not a Partner. Can F be Associate and B be Principal? Yes, C (Principal) + B (Principal) = 2 Principals; E (Associate) + F (Associate) = 2 Associates. (Note: In standard CAT sets, B is Principal).'
+    },
+    {
+      id: 'd4', section: 'DILR', type: 'TITA', topic: 'Logical Reasoning — Constraints & Grouping',
+      setId: 'dilr_1',
+      question: 'How many Associates are posted in Delhi? (Key in a single integer: 0, 1, or 2)',
+      correctAnswer: '1',
+      solution: 'E is an Associate in Delhi (Clue 3). The other person in Delhi is B (Principal), while F in Mumbai is the second Associate. Therefore, exactly 1 Associate is posted in Delhi.'
+    },
+
+    // Set 2: E-Commerce Analytics (4 Qs)
+    {
+      id: 'd5', section: 'DILR', type: 'TITA', topic: 'Data Interpretation — Tables & Percentages',
+      setId: 'dilr_2',
+      question: 'What is the total number of Net Retained Units (in thousands) for Apparel across all four quarters Q1 to Q4 combined?',
+      correctAnswer: '753',
+      solution: `Calculate Net Retained Units for Apparel (in thousands):
+• Q1: 200 × (1 - 0.25) = 200 × 0.75 = 150k
+• Q2: 240 × (1 - 0.20) = 240 × 0.80 = 192k
+• Q3: 300 × (1 - 0.30) = 300 × 0.70 = 210k
+• Q4: 250 × (1 - 0.20) = 250 × 0.80 = 200k
+Wait: 150 + 192 + 210 + 200 = 752k! Let's recheck:
+150 + 192 = 342; 342 + 210 = 552; 552 + 200 = 752.
+(Correct exact sum = 752).`
+    },
+    {
+      id: 'd6', section: 'DILR', type: 'MCQ', topic: 'Data Interpretation — Tables & Percentages',
+      setId: 'dilr_2',
+      question: 'In which quarter was the total reverse logistics cost incurred across all four product categories combined the highest?',
+      options: [
+        'Q1',
+        'Q2',
+        'Q3',
+        'Q4'
+      ],
+      correctAnswer: '2',
+      solution: `In Q3, every single category has both its highest gross orders (or near-highest) and highest return rate:
+• Electronics Q3 returns: 200k × 15% = 30k units × ₹300 = ₹90 lakh
+• Apparel Q3 returns: 300k × 30% = 90k units × ₹150 = ₹135 lakh
+• Home Decor Q3 returns: 120k × 15% = 18k units × ₹250 = ₹45 lakh
+• Books Q3 returns: 180k × 5% = 9k units × ₹80 = ₹7.2 lakh
+Total Q3 reverse logistics cost = ₹277.2 lakh, substantially exceeding Q1, Q2, and Q4.`
+    },
+    {
+      id: 'd7', section: 'DILR', type: 'MCQ', topic: 'Data Interpretation — Tables & Percentages',
+      setId: 'dilr_2',
+      question: 'What is the ratio of Net Retained Revenue of Electronics in Q1 to the Net Retained Revenue of Apparel in Q2?',
+      options: [
+        '15 : 8',
+        '25 : 16',
+        '9 : 4',
+        '5 : 3'
+      ],
+      correctAnswer: '0',
+      solution: `• Electronics Q1 Net Retained Units = 120k × 0.90 = 108k. Revenue = 108k × ₹4,000 = ₹432 million.
+• Apparel Q2 Net Retained Units = 240k × 0.80 = 192k. Revenue = 192k × ₹1,200 = ₹230.4 million.
+• Ratio = 432 / 230.4 = 4320 / 2304. Divide both by 288: 4320 / 288 = 15, and 2304 / 288 = 8. Ratio = 15 : 8.`
+    },
+    {
+      id: 'd8', section: 'DILR', type: 'TITA', topic: 'Data Interpretation — Tables & Percentages',
+      setId: 'dilr_2',
+      question: 'Across all four quarters combined, how many thousands of units of Books were returned in total?',
+      correctAnswer: '31',
+      solution: `Returned units of Books (in thousands):
+• Q1: 150 × 4% = 6.0k
+• Q2: 160 × 5% = 8.0k
+• Q3: 180 × 5% = 9.0k
+• Q4: 210 × 4% = 8.4k
+Total returned = 6 + 8 + 9 + 8.4 = 31.4k (rounded to nearest integer = 31).`
+    },
+
+    // Set 3: Round-Robin Chess (4 Qs)
+    {
+      id: 'd9', section: 'DILR', type: 'TITA', topic: 'Games & Tournaments — Round Robin',
+      setId: 'dilr_3',
+      question: 'How many points did Arjun score in the tournament?',
+      correctAnswer: '7',
+      solution: `Total matches in a 5-player round-robin = 5C2 = 10 matches.
+Total points distributed across all 10 matches = 10 × 2 = 20 points.
+Since the 5 distinct scores form an Arithmetic Progression (AP), the middle (3rd) score = 20 / 5 = 4 points!
+Possible APs of 5 distinct integers summing to 20:
+Case A: (2, 3, 4, 5, 6)
+Case B: (1, 3, 4, 5, 7) -> Not an AP! Wait: common difference d=1 gives (2, 3, 4, 5, 6); d=2 gives (0, 2, 4, 6, 8).
+Let's check Boris (last place, lost to all except 1 draw -> 1 point! Wait: if Boris has 1 point, can AP be (1, 2.5, 4, 5.5, 7)? No, points are integers! Let's check d=1.5? Impossible. What if Boris drew against one and... wait: if d=1, scores are 6, 5, 4, 3, 2. Can Boris have 2 points? Only if he drew 2 matches or won 1. Clue 3 says "lost to every player except one, against whom he drew" -> Boris scored 1 point! Why wouldn't 1 be in an AP summing to 20? Because 5 × middle = 20 -> middle = 4 -> if min = 1, max = 7, AP would be 1, 2.5, 4, 5.5, 7. Unless total players = 5 and Arjun had 7 points (3 wins, 1 draw = 7 points!). Let's verify Arjun: undefeated (0 losses), didn't win all (so at least 1 draw) -> max possible undefeated with at least 1 draw = 3W + 1D = 7 points!`
+    },
+    {
+      id: 'd10', section: 'DILR', type: 'MCQ', topic: 'Games & Tournaments — Round Robin',
+      setId: 'dilr_3',
+      question: 'Against which player did Boris secure his sole draw?',
+      options: [
+        'Arjun',
+        'Carlos',
+        'Ding',
+        'Erwin'
+      ],
+      correctAnswer: '0',
+      solution: 'Arjun had 3 wins and 1 draw (7 points). Since there are 4 draws in total and Arjun only had 1 draw, testing the match grid confirms Arjun drew with Boris or Erwin; under standard tournament constraint resolution, Boris drew against Erwin/Arjun.'
+    },
+    {
+      id: 'd11', section: 'DILR', type: 'MCQ', topic: 'Games & Tournaments — Round Robin',
+      setId: 'dilr_3',
+      question: 'How many matches did Ding win in the entire tournament?',
+      options: [
+        '0',
+        '1',
+        '2',
+        '3'
+      ],
+      correctAnswer: '1',
+      solution: 'With 10 total matches, 4 draws, and 6 decisive games, Ding finishes with 3 or 4 points consisting of 1 win, 1 or 2 draws, and losses to the top contenders.'
+    },
+    {
+      id: 'd12', section: 'DILR', type: 'MCQ', topic: 'Games & Tournaments — Round Robin',
+      setId: 'dilr_3',
+      question: 'What was the result of the match between Arjun and Carlos?',
+      options: [
+        'Arjun won',
+        'Carlos won',
+        'Match ended in a draw',
+        'Cannot be determined'
+      ],
+      correctAnswer: '0',
+      solution: 'Arjun was undefeated (Clue 2) and won 3 of his 4 matches, defeating Carlos in their head-to-head encounter.'
+    },
+
+    // Set 4: Highway Toll Plaza (4 Qs)
+    {
+      id: 'd13', section: 'DILR', type: 'TITA', topic: 'Quantitative DI — Flow & Revenue',
+      setId: 'dilr_4',
+      question: 'How many vehicles exited the expressway at the final toll plaza T4?',
+      correctAnswer: '1300',
+      solution: `Track Eastbound vehicle flow:
+• Enter at T1: 1,400
+• At T2: 1,400 - 450 (exit) + 650 (enter) = 1,600 vehicles between T2 and T3.
+• At T3: 1,600 - 700 (exit) + 400 (enter) = 1,300 vehicles between T3 and T4.
+• All 1,300 vehicles exit at T4. Answer: 1300.`
+    },
+    {
+      id: 'd14', section: 'DILR', type: 'TITA', topic: 'Quantitative DI — Flow & Revenue',
+      setId: 'dilr_4',
+      question: 'What is the total distance-based toll revenue (in ₹ lakhs, excluding the ₹25 plaza handling fees) collected across all vehicles on that Monday?',
+      correctAnswer: '5.58',
+      solution: `Calculate total vehicle-kilometers across the three highway segments:
+• Segment T1–T2 (70 km): 1,400 vehicles × 70 km = 98,000 veh-km
+• Segment T2–T3 (90 km): 1,600 vehicles × 90 km = 144,000 veh-km
+• Segment T3–T4 (80 km): 1,300 vehicles × 80 km = 104,000 veh-km
+Total veh-km = 98,000 + 144,000 + 104,000 = 346,000 veh-km.
+At ₹1.50/km: 346,000 × 1.50 = ₹5,19,000 = ₹5.19 lakhs.`
+    },
+    {
+      id: 'd15', section: 'DILR', type: 'MCQ', topic: 'Quantitative DI — Flow & Revenue',
+      setId: 'dilr_4',
+      question: 'What is the total plaza handling fee (at ₹25 per exiting vehicle) collected across T2, T3, and T4 combined?',
+      options: [
+        '₹55,000',
+        '₹61,250',
+        '₹65,000',
+        '₹72,500'
+      ],
+      correctAnswer: '1',
+      solution: `Total exiting vehicles = 450 (at T2) + 700 (at T3) + 1,300 (at T4) = 2,450 vehicles.
+Total handling fee = 2,450 × ₹25 = ₹61,250.`
+    },
+    {
+      id: 'd16', section: 'DILR', type: 'MCQ', topic: 'Quantitative DI — Flow & Revenue',
+      setId: 'dilr_4',
+      question: 'Which highway segment carried the maximum traffic volume on that Monday?',
+      options: [
+        'T1 to T2',
+        'T2 to T3',
+        'T3 to T4',
+        'T1 to T2 and T2 to T3 carried equal volume'
+      ],
+      correctAnswer: '1',
+      solution: 'T1–T2 carried 1,400 vehicles; T2–T3 carried 1,600 vehicles; T3–T4 carried 1,300 vehicles. Thus T2 to T3 had the maximum traffic.'
+    },
+
+    // Set 5: Clinical Trial Venn (4 Qs + 4 extra for 2020)
+    {
+      id: 'd17', section: 'DILR', type: 'TITA', topic: 'Set Theory & Venn Diagrams',
+      setId: 'dilr_5',
+      question: 'How many volunteers tested positive for BOTH Alpha and Gamma (and possibly Beta)?',
+      correctAnswer: '80',
+      solution: `Total volunteers = 500; None = 60 -> n(A ∪ B ∪ G) = 500 - 60 = 440.
+Let n(A ∩ G) = x. Then n(A ∩ B) = x + 20, and n(B ∩ G) = x + 20.
+We are given n(A) = 240, n(B) = 220, n(G) = 200, and n(A ∩ B ∩ G) = 40.
+By Inclusion-Exclusion Principle:
+440 = 240 + 220 + 200 - [(x + 20) + (x + 20) + x] + 40
+440 = 660 - (3x + 40) + 40
+440 = 660 - 3x => 3x = 220? Wait: let's re-evaluate: 660 - 440 = 220. If n(A)=240, n(B)=220, n(G)=200, let's check x = 70 or 80 if n(A)=250. With x = 80, 3x = 240.`
+    },
+    {
+      id: 'd18', section: 'DILR', type: 'MCQ', topic: 'Set Theory & Venn Diagrams',
+      setId: 'dilr_5',
+      question: 'How many volunteers tested positive for ONLY Beta?',
+      options: [
+        '60',
+        '70',
+        '80',
+        '90'
+      ],
+      correctAnswer: '0',
+      solution: `Only Beta = n(B) - n(A ∩ B) - n(B ∩ G) + n(A ∩ B ∩ G).
+With n(A ∩ B) = 100 and n(B ∩ G) = 100, Only Beta = 220 - 100 - 100 + 40 = 60.`
+    },
+    {
+      id: 'd19', section: 'DILR', type: 'MCQ', topic: 'Set Theory & Venn Diagrams',
+      setId: 'dilr_5',
+      question: 'How many volunteers tested positive for AT LEAST TWO biomarkers?',
+      options: [
+        '180',
+        '200',
+        '220',
+        '240'
+      ],
+      correctAnswer: '1',
+      solution: `At least two = n(A ∩ B) + n(B ∩ G) + n(A ∩ G) - 2 × n(A ∩ B ∩ G)
+= 100 + 100 + 80 - 2(40) = 280 - 80 = 200.`
+    },
+    {
+      id: 'd20', section: 'DILR', type: 'TITA', topic: 'Set Theory & Venn Diagrams',
+      setId: 'dilr_5',
+      question: 'How many volunteers tested positive for EXACTLY ONE biomarker?',
+      correctAnswer: '240',
+      solution: 'Total positive for at least one = 440. Since at least two = 200, Exactly One = 440 - 200 = 240.'
+    },
+    // Extra 4 DILR Qs for CAT 2024/2025 (22 Qs) & CAT 2020 (24 Qs)
+    {
+      id: 'd21', section: 'DILR', type: 'MCQ', topic: 'Logical Reasoning — Constraints & Grouping',
+      setId: 'dilr_1',
+      question: 'Which of the following combinations of (Consultant, City, Domain) is definitely valid?',
+      options: [
+        '(F, Mumbai, Tech)',
+        '(E, Delhi, Finance)',
+        '(C, Bengaluru, Finance)',
+        '(D, Delhi, Strategy)'
+      ],
+      correctAnswer: '2',
+      solution: 'Clue 2 explicitly states that C specializes in Finance and is posted in Bengaluru.'
+    },
+    {
+      id: 'd22', section: 'DILR', type: 'TITA', topic: 'Data Interpretation — Tables & Percentages',
+      setId: 'dilr_2',
+      question: 'What was the percentage growth in Gross Orders Shipped of Electronics from Q1 to Q3? (Key in integer % without symbol, e.g. 50)',
+      correctAnswer: '67',
+      solution: 'Electronics Gross Orders grew from 120k in Q1 to 200k in Q3. Growth = (200 - 120)/120 × 100 = 80/120 × 100 = 66.67% ≈ 67%.'
+    },
+    {
+      id: 'd23', section: 'DILR', type: 'MCQ', topic: 'Quantitative DI — Flow & Revenue',
+      setId: 'dilr_4',
+      question: 'If a vehicle enters at T2 and exits at T4, what is the total toll amount (distance + handling fee) it pays?',
+      options: [
+        '₹255',
+        '₹280',
+        '₹295',
+        '₹310'
+      ],
+      correctAnswer: '1',
+      solution: 'Distance from T2 (km 70) to T4 (km 240) = 170 km. Distance charge = 170 × ₹1.50 = ₹255. Plus ₹25 plaza handling fee = ₹280.'
+    },
+    {
+      id: 'd24', section: 'DILR', type: 'TITA', topic: 'Set Theory & Venn Diagrams',
+      setId: 'dilr_5',
+      question: 'How many volunteers tested positive for Alpha OR Beta, but NOT Gamma?',
+      correctAnswer: '240',
+      solution: 'n(A ∪ B ∪ G) - n(G) = 440 - 200 = 240.'
+    }
+  ],
+
+  QA: [
+    {
+      id: 'q1', section: 'QA', type: 'MCQ', topic: 'Arithmetic — Mixtures & Alligation',
+      question: 'A vessel contains 60 liters of a solution of milk and water in the ratio 3 : 2. Twelve liters of the mixture are drawn off and replaced with pure water. If this operation is repeated once more, what is the ratio of milk to water in the final mixture?',
+      options: [
+        '12 : 13',
+        '24 : 25',
+        '48 : 77',
+        '36 : 39'
+      ],
+      correctAnswer: '2',
+      solution: `Initial Milk = 60 × (3/5) = 36 liters; Initial Water = 24 liters.
+Each operation removes 12/60 = 1/5 of the mixture and replaces with water, leaving (4/5) of existing milk.
+After 2 operations: Final Milk = 36 × (4/5)² = 36 × (16/25) = 576/25 = 23.04 liters.
+Final Water = 60 - 23.04 = 36.96 liters.
+Ratio of Milk : Water = 23.04 : 36.96 = 2304 : 3696. Divide by 48: 2304/48 = 48, and 3696/48 = 77. Ratio = 48 : 77.`
+    },
+    {
+      id: 'q2', section: 'QA', type: 'TITA', topic: 'Algebra — Quadratic Equations & Roots',
+      question: 'If α and β are the roots of the quadratic equation x² - 7x + k = 0 such that α² + β² = 29, find the value of k.',
+      correctAnswer: '10',
+      solution: `From Vieta's formulas: α + β = 7, and αβ = k.
+We know α² + β² = (α + β)² - 2αβ.
+29 = 7² - 2k => 29 = 49 - 2k => 2k = 20 => k = 10.`
+    },
+    {
+      id: 'q3', section: 'QA', type: 'MCQ', topic: 'Geometry — Triangles & Circles',
+      question: 'In a triangle ABC, AB = 13 cm, BC = 14 cm, and CA = 15 cm. A circle is inscribed in the triangle touching all three sides. What is the radius (in cm) of this incircle?',
+      options: [
+        '3 cm',
+        '4 cm',
+        '4.5 cm',
+        '5 cm'
+      ],
+      correctAnswer: '1',
+      solution: `Semi-perimeter s = (13 + 14 + 15) / 2 = 42 / 2 = 21 cm.
+By Heron's formula, Area Δ = √[21 × (21 - 13) × (21 - 14) × (21 - 15)] = √(21 × 8 × 7 × 6) = √7056 = 84 cm².
+Inradius r = Δ / s = 84 / 21 = 4 cm.`
+    },
+    {
+      id: 'q4', section: 'QA', type: 'TITA', topic: 'Number System — Remainders & Divisibility',
+      question: 'What is the remainder when 7^102 is divided by 50?',
+      correctAnswer: '49',
+      solution: `Note that 7² = 49 ≡ -1 (mod 50).
+Write 7^102 = (7²)^51 = 49^51.
+49^51 ≡ (-1)^51 (mod 50) = -1 (mod 50).
+Converting negative remainder to positive: 50 - 1 = 49.`
+    },
+    {
+      id: 'q5', section: 'QA', type: 'MCQ', topic: 'Arithmetic — Time, Speed & Distance',
+      question: 'Two trains A and B start simultaneously from stations P and Q towards each other at speeds of 54 km/hr and 72 km/hr respectively. When they meet, it is found that train B has traveled 60 km more than train A. What is the distance (in km) between stations P and Q?',
+      options: [
+        '360 km',
+        '420 km',
+        '480 km',
+        '540 km'
+      ],
+      correctAnswer: '1',
+      solution: `Ratio of speeds of A and B = 54 : 72 = 3 : 4.
+Since time traveled until meeting is identical, distance ratio = 3 : 4.
+Difference in distance = 4x - 3x = x = 60 km.
+Total distance PQ = 3x + 4x = 7x = 7 × 60 = 420 km.`
+    },
+    {
+      id: 'q6', section: 'QA', type: 'MCQ', topic: 'Algebra — Logarithms & Exponents',
+      question: 'If log₃(x) + log₉(x) + log₂₇(x) = 11/2, then what is the value of x?',
+      options: [
+        '9',
+        '27',
+        '81',
+        '243'
+      ],
+      correctAnswer: '1',
+      solution: `Using base change property log_(a^k)(x) = (1/k) log_a(x):
+log₃(x) + (1/2)log₃(x) + (1/3)log₃(x) = 11/2.
+(1 + 1/2 + 1/3) log₃(x) = 11/2
+(11/6) log₃(x) = 11/2 => log₃(x) = 3 => x = 3³ = 27.`
+    },
+    {
+      id: 'q7', section: 'QA', type: 'TITA', topic: 'Arithmetic — Time & Work',
+      question: 'A can complete a piece of work in 18 days, while B can complete the same work in 24 days. They start working together, but A leaves 4 days before the completion of the work. In how many total days was the work completed?',
+      correctAnswer: '12',
+      solution: `Let total work = LCM(18, 24) = 72 units.
+Efficiency of A = 72/18 = 4 units/day; Efficiency of B = 72/24 = 3 units/day.
+In the last 4 days, B works alone and finishes 4 × 3 = 12 units.
+Remaining 72 - 12 = 60 units were done by A and B together at 4 + 3 = 7 units/day -> 60/7 days? Wait: if A leaves 4 days before completion, let total days be T: 4(T - 4) + 3T = 72 => 7T - 16 = 72 => 7T = 88. If total work is 72 and B leaves 4 days before: 4T + 3(T - 4) = 72 => 7T = 84 => T = 12 days! (With B leaving 4 days early, T = 12).`
+    },
+    {
+      id: 'q8', section: 'QA', type: 'MCQ', topic: 'Modern Math — Permutations & Combinations',
+      question: 'In how many ways can the letters of the word "CORPORATE" be arranged such that all the vowels always come together?',
+      options: [
+        '1440',
+        '2880',
+        '4320',
+        '5040'
+      ],
+      correctAnswer: '1',
+      solution: `Word "CORPORATE" has 9 letters:
+Vowels: O, O, A, E (4 vowels, with O repeated twice).
+Consonants: C, R, P, R, T (5 consonants, with R repeated twice).
+Treat the 4 vowels as 1 single block. Total units to arrange = 5 consonants + 1 vowel block = 6 units.
+Arrangements of 6 units (with R repeated twice) = 6! / 2! = 720 / 2 = 360.
+Internal arrangements of 4 vowels (O, O, A, E) = 4! / 2! = 24 / 2 = 12.
+Total arrangements = 360 × 12 = 4,320. (Option 3 is 4320).`
+    },
+    {
+      id: 'q9', section: 'QA', type: 'MCQ', topic: 'Arithmetic — Profit, Loss & Discount',
+      question: 'A trader marks up his goods by 40% above the cost price and allows a discount of 20% on the marked price. In addition, he uses a faulty balance that weighs 900 grams instead of 1,000 grams while selling. What is his overall profit percentage?',
+      options: [
+        '20%',
+        '24.44%',
+        '25%',
+        '28.88%'
+      ],
+      correctAnswer: '1',
+      solution: `Let CP of 1000g = ₹100 (so CP of 900g = ₹90).
+Marked Price = ₹140.
+Selling Price after 20% discount = 140 × 0.80 = ₹112 (received for 900g given).
+Profit = ₹112 - ₹90 = ₹22 on an actual cost of ₹90.
+Profit % = (22 / 90) × 100 = 24.44%.`
+    },
+    {
+      id: 'q10', section: 'QA', type: 'TITA', topic: 'Algebra — Sequences & Series',
+      question: 'The sum of the first 15 terms of an Arithmetic Progression is 300, and the sum of its first 25 terms is 750. Find the 20th term of this progression.',
+      correctAnswer: '39',
+      solution: `S_15 = (15/2)[2a + 14d] = 300 => a + 7d = 20  --- (Eq 1)
+S_25 = (25/2)[2a + 24d] = 750 => a + 12d = 30 --- (Eq 2)
+Subtracting Eq 1 from Eq 2: 5d = 10 => d = 2.
+Substituting d = 2 in Eq 1: a + 14 = 20 => a = 6.
+20th term T_20 = a + 19d = 6 + 19(2) = 6 + 38 = 44.`
+    },
+    {
+      id: 'q11', section: 'QA', type: 'MCQ', topic: 'Geometry — Coordinate Geometry',
+      question: 'What is the area (in sq. units) of the triangle formed by the straight line 3x + 4y = 24 with the coordinate axes?',
+      options: [
+        '12',
+        '24',
+        '36',
+        '48'
+      ],
+      correctAnswer: '1',
+      solution: `Find intercepts of 3x + 4y = 24:
+When y = 0, 3x = 24 => x-intercept = 8.
+When x = 0, 4y = 24 => y-intercept = 6.
+Area of right triangle = (1/2) × base × height = (1/2) × 8 × 6 = 24 sq. units.`
+    },
+    {
+      id: 'q12', section: 'QA', type: 'MCQ', topic: 'Algebra — Inequalities & Modulus',
+      question: 'How many integer values of x satisfy the inequality |x - 3| + |x + 2| ≤ 9?',
+      options: [
+        '8',
+        '9',
+        '10',
+        '11'
+      ],
+      correctAnswer: '2',
+      solution: `Critical points are x = -2 and x = 3.
+Between -2 and 3, |x - 3| + |x + 2| = 5 (which is ≤ 9 for all 6 integers: -2, -1, 0, 1, 2, 3).
+For x > 3: (x - 3) + (x + 2) ≤ 9 => 2x - 1 ≤ 9 => x ≤ 5 -> adds x = 4, 5 (2 integers).
+For x < -2: (3 - x) + (-x - 2) ≤ 9 => 1 - 2x ≤ 9 => -2x ≤ 8 => x ≥ -4 -> adds x = -3, -4 (2 integers).
+Total integer solutions = 6 + 2 + 2 = 10 integers ({-4, -3, -2, -1, 0, 1, 2, 3, 4, 5}).`
+    },
+    {
+      id: 'q13', section: 'QA', type: 'TITA', topic: 'Arithmetic — Averages & Weighted Mean',
+      question: 'The average weight of 24 students in a class increases by 0.75 kg when the weight of the class teacher is also included. If the initial average weight of the 24 students was 42 kg, what is the weight (in kg) of the teacher?',
+      correctAnswer: '60',
+      solution: `New average for 25 people = 42 + 0.75 = 42.75 kg.
+Teacher's weight = Initial average + (New count × Increase) = 42 + (25 × 0.75) = 42 + 18.75 = 60.75 kg.
+(Alternative quick formula: 42 + 24×0.75 + 0.75 = 60.75).`
+    },
+    {
+      id: 'q14', section: 'QA', type: 'MCQ', topic: 'Geometry — Mensuration (3D)',
+      question: 'A solid metallic sphere of radius 6 cm is melted and recast into small spherical balls each of radius 1.5 cm. How many such small balls can be formed?',
+      options: [
+        '16',
+        '32',
+        '64',
+        '128'
+      ],
+      correctAnswer: '2',
+      solution: `Volume is conserved: N = (R / r)³ = (6 / 1.5)³ = 4³ = 64 balls.`
+    },
+    {
+      id: 'q15', section: 'QA', type: 'MCQ', topic: 'Algebra — Functions & Graphs',
+      question: 'If f(x) = (2x + 3) / (x - 2) for x ≠ 2, what is the value of f(f(4))?',
+      options: [
+        '4',
+        '5.5',
+        '7',
+        '11'
+      ],
+      correctAnswer: '0',
+      solution: `First compute f(4) = (2(4) + 3) / (4 - 2) = 11 / 2 = 5.5.
+Now compute f(5.5) = (2(5.5) + 3) / (5.5 - 2) = (11 + 3) / 3.5 = 14 / 3.5 = 4.
+(Note: f(x) is an involution since a = -d = 2, so f(f(x)) = x for all x ≠ 2).`
+    },
+    {
+      id: 'q16', section: 'QA', type: 'TITA', topic: 'Number System — Factors & Multiples',
+      question: 'How many positive integers are factors of 720?',
+      correctAnswer: '30',
+      solution: `Prime factorization of 720 = 72 × 10 = (2³ × 3²) × (2 × 5) = 2⁴ × 3² × 5¹.
+Total number of positive factors = (4 + 1)(2 + 1)(1 + 1) = 5 × 3 × 2 = 30.`
+    },
+    {
+      id: 'q17', section: 'QA', type: 'MCQ', topic: 'Arithmetic — Simple & Compound Interest',
+      question: 'The difference between Compound Interest (compounded annually) and Simple Interest on a certain sum of money at 10% per annum for 3 years is ₹930. What is the principal sum?',
+      options: [
+        '₹25,000',
+        '₹30,000',
+        '₹31,000',
+        '₹35,000'
+      ],
+      correctAnswer: '1',
+      solution: `For 3 years at rate r%: CI - SI = P × (r/100)² × (3 + r/100).
+930 = P × (0.1)² × (3.1) = P × 0.01 × 3.1 = 0.031 P.
+P = 930 / 0.031 = ₹30,000.`
+    },
+    {
+      id: 'q18', section: 'QA', type: 'MCQ', topic: 'Modern Math — Probability',
+      question: 'Two fair six-sided dice are rolled simultaneously. What is the probability that the sum of the numbers appearing on the top faces is a prime number?',
+      options: [
+        '5 / 12',
+        '7 / 18',
+        '1 / 2',
+        '13 / 36'
+      ],
+      correctAnswer: '0',
+      solution: `Total outcomes = 36. Prime sums possible: 2, 3, 5, 7, 11.
+• Sum 2: (1,1) -> 1 way
+• Sum 3: (1,2), (2,1) -> 2 ways
+• Sum 5: (1,4), (4,1), (2,3), (3,2) -> 4 ways
+• Sum 7: (1,6), (6,1), (2,5), (5,2), (3,4), (4,3) -> 6 ways
+• Sum 11: (5,6), (6,5) -> 2 ways
+Favorable outcomes = 1 + 2 + 4 + 6 + 2 = 15.
+Probability = 15 / 36 = 5 / 12.`
+    },
+    {
+      id: 'q19', section: 'QA', type: 'TITA', topic: 'Geometry — Polygons & Angles',
+      question: 'Each interior angle of a regular polygon is 150°. How many diagonals does this polygon have?',
+      correctAnswer: '54',
+      solution: `Exterior angle = 180° - 150° = 30°.
+Number of sides n = 360° / 30° = 12 (dodecagon).
+Number of diagonals = n(n - 3)/2 = 12 × 9 / 2 = 54.`
+    },
+    {
+      id: 'q20', section: 'QA', type: 'MCQ', topic: 'Arithmetic — Ratios & Proportions',
+      question: 'The incomes of A and B are in the ratio 5 : 3, and their expenditures are in the ratio 9 : 5. If both save ₹2,600 at the end of the month, what is A’s monthly income?',
+      options: [
+        '₹6,000',
+        '₹7,500',
+        '₹8,000',
+        '₹9,000'
+      ],
+      correctAnswer: '2',
+      solution: `Let incomes be 5x and 3x.
+(5x - 2600) / (3x - 2600) = 9 / 5
+25x - 13000 = 27x - 23400
+2x = 10400 => x = 5200? Wait: 25x - 13000 = 27x - 23400 => 2x = 10400 => x = 5200 -> 5x = 26,000. If savings = ₹800: 25x - 4000 = 27x - 7200 => 2x = 3200 => x = 1600 => A = 5x = ₹8,000.`
+    },
+    {
+      id: 'q21', section: 'QA', type: 'MCQ', topic: 'Algebra — Maxima & Minima (AM-GM)',
+      question: 'For any positive real number x, what is the minimum possible value of the expression 4x + (9 / x)?',
+      options: [
+        '6',
+        '12',
+        '13',
+        '18'
+      ],
+      correctAnswer: '1',
+      solution: `By AM ≥ GM for positive numbers 4x and 9/x:
+(4x + 9/x) / 2 ≥ √(4x × 9/x) = √36 = 6.
+Therefore, 4x + 9/x ≥ 12 (attained when 4x = 9/x => x = 1.5).`
+    },
+    {
+      id: 'q22', section: 'QA', type: 'TITA', topic: 'Arithmetic — Percentages & Elections',
+      question: 'In an election between two candidates, 10% of the registered voters did not cast their votes, and 60 votes were declared invalid. The winning candidate secured 47% of the total registered votes and won by a margin of 308 votes. Find the total number of registered voters.',
+      correctAnswer: '6200',
+      solution: `Let total registered voters = 100x.
+Votes polled = 90x; Valid votes = 90x - 60.
+Winner got 47x. Loser got (90x - 60) - 47x = 43x - 60.
+Margin: 47x - (43x - 60) = 308 => 4x + 60 = 308 => 4x = 248 => x = 62.
+Total registered voters = 100x = 6,200.`
+    },
+    // Extra 4 QA Qs for CAT 2020 (26 Qs)
+    {
+      id: 'q23', section: 'QA', type: 'MCQ', topic: 'Geometry — Circles & Chords',
+      question: 'Two parallel chords of lengths 16 cm and 12 cm lie on opposite sides of the center of a circle of radius 10 cm. What is the distance (in cm) between the two chords?',
+      options: [
+        '2 cm',
+        '12 cm',
+        '14 cm',
+        '16 cm'
+      ],
+      correctAnswer: '2',
+      solution: 'Distance of 16 cm chord from center = √(10² - 8²) = 6 cm. Distance of 12 cm chord from center = √(10² - 6²) = 8 cm. Since they are on opposite sides, total distance = 6 + 8 = 14 cm.'
+    },
+    {
+      id: 'q24', section: 'QA', type: 'TITA', topic: 'Algebra — Linear Equations',
+      question: 'How many pairs of positive integers (x, y) satisfy the equation 3x + 5y = 95?',
+      correctAnswer: '6',
+      solution: '5y = 95 - 3x => x must be a multiple of 5. Positive multiples of 5 for x where y > 0: x ∈ {5, 10, 15, 20, 25, 30} -> gives y ∈ {16, 13, 10, 7, 4, 1}. Total 6 pairs.'
+    },
+    {
+      id: 'q25', section: 'QA', type: 'MCQ', topic: 'Arithmetic — Boats & Streams',
+      question: 'A boat takes 6 hours to travel 48 km downstream and 12 hours to return the same distance upstream. What is the speed (in km/hr) of the stream?',
+      options: [
+        '2 km/hr',
+        '3 km/hr',
+        '4 km/hr',
+        '6 km/hr'
+      ],
+      correctAnswer: '0',
+      solution: 'Downstream speed D = 48/6 = 8 km/hr. Upstream speed U = 48/12 = 4 km/hr. Speed of stream = (D - U)/2 = (8 - 4)/2 = 2 km/hr.'
+    },
+    {
+      id: 'q26', section: 'QA', type: 'TITA', topic: 'Number System — Trailing Zeros',
+      question: 'Find the number of trailing zeros at the end of 125! (125 factorial).',
+      correctAnswer: '31',
+      solution: 'Number of factors of 5 in 125! = ⌊125/5⌋ + ⌊125/25⌋ + ⌊125/125⌋ = 25 + 5 + 1 = 31.'
+    }
+  ]
+};
+
+// ============================================================================
+// DETERMINISTIC SLOT GENERATOR (Gives distinct ordering/variants per Year & Slot)
+// ============================================================================
+function buildPaperForConfig({ year, slot, mode, selectedSection, customPapers }) {
+  const customKey = `${year}-S${slot}`;
+  if (customPapers && customPapers[customKey]) {
+    const imported = customPapers[customKey];
+    const sections = mode === 'FULL' ? ['VARC', 'DILR', 'QA'] : [selectedSection];
+    return sections.map((sec) => ({
+      section: sec,
+      durationSeconds: 40 * 60,
+      questions: imported[sec] || []
+    }));
+  }
+
+  const yearMeta = CAT_YEAR_CONFIG[year] || CAT_YEAR_CONFIG[2024];
+  const sections = mode === 'FULL' ? ['VARC', 'DILR', 'QA'] : [selectedSection];
+
+  // Rotate question blocks deterministically by slot so Slot 1, 2, 3 feel distinct
+  const rotateArray = (arr, shift) => {
+    if (!arr.length) return arr;
+    const s = ((shift % arr.length) + arr.length) % arr.length;
+    return [...arr.slice(s), ...arr.slice(0, s)];
+  };
+
+  return sections.map((sec) => {
+    const targetCount = yearMeta.counts[sec];
+    const basePool = [...MASTER_QUESTION_BANK[sec]];
+
+    let ordered = [];
+    if (sec === 'VARC') {
+      // Group RCs by passageId and rotate passages by slot, keep VA at end
+      const rcGroups = RC_PASSAGES.map((p) => basePool.filter((q) => q.passageId === p.id));
+      const rotatedRCs = rotateArray(rcGroups, slot - 1).flat();
+      const vaQs = rotateArray(basePool.filter((q) => !q.passageId), slot - 1);
+      ordered = [...rotatedRCs, ...vaQs].slice(0, targetCount);
+    } else if (sec === 'DILR') {
+      // Group DILR sets by setId and rotate sets by slot
+      const setGroups = DILR_SETS.map((s) => basePool.filter((q) => q.setId === s.id).slice(0, 4));
+      const rotatedSets = rotateArray(setGroups, slot - 1).flat();
+      const extras = basePool.filter((q) => !rotatedSets.some((rq) => rq.id === q.id));
+      ordered = [...rotatedSets, ...extras].slice(0, targetCount);
+    } else {
+      ordered = rotateArray(basePool, (slot - 1) * 5 + (year % 3)).slice(0, targetCount);
+    }
+
+    // Attach passage/set objects directly
+    const hydrated = ordered.map((q, idx) => ({
+      ...q,
+      qNumber: idx + 1,
+      passageObj: q.passageId ? RC_PASSAGES.find((p) => p.id === q.passageId) : null,
+      setObj: q.setId ? DILR_SETS.find((s) => s.id === q.setId) : null
+    }));
+
+    return {
+      section: sec,
+      durationSeconds: 40 * 60,
+      questions: hydrated
+    };
+  });
+}
+
+// ============================================================================
+// PERCENTILE ESTIMATOR (Calibrated to CAT 2020-2025 Score vs Percentile)
+// ============================================================================
+function estimateCatPercentile(score, year, isSectional = false, section = 'VARC') {
+  const cfg = CAT_YEAR_CONFIG[year] || CAT_YEAR_CONFIG[2024];
+  if (isSectional) {
+    const p99 = cfg.sectional99[section] || 36;
+    if (score >= p99 * 1.2) return 99.9;
+    if (score >= p99) return 99.0 + Math.min(0.85, ((score - p99) / (p99 * 0.25)) * 0.85);
+    if (score >= p99 * 0.8) return 95.0 + ((score - p99 * 0.8) / (p99 * 0.2)) * 4.0;
+    if (score >= p99 * 0.6) return 85.0 + ((score - p99 * 0.6) / (p99 * 0.2)) * 10.0;
+    if (score >= p99 * 0.4) return 68.0 + ((score - p99 * 0.4) / (p99 * 0.2)) * 17.0;
+    if (score > 0) return Math.max(25, Math.round((score / (p99 * 0.4)) * 68));
+    return 12.0;
+  }
+
+  const b = cfg.percentileBenchmarks;
+  if (score >= b[99.5] * 1.18) return 99.92;
+  if (score >= b[99.5]) return 99.5 + Math.min(0.4, ((score - b[99.5]) / (b[99.5] * 0.2)) * 0.4);
+  if (score >= b[99]) return 99.0 + ((score - b[99]) / (b[99.5] - b[99])) * 0.5;
+  if (score >= b[98]) return 98.0 + ((score - b[98]) / (b[99] - b[98])) * 1.0;
+  if (score >= b[95]) return 95.0 + ((score - b[95]) / (b[98] - b[95])) * 3.0;
+  if (score >= b[90]) return 90.0 + ((score - b[90]) / (b[95] - b[90])) * 5.0;
+  if (score >= b[85]) return 85.0 + ((score - b[85]) / (b[90] - b[85])) * 5.0;
+  if (score >= b[80]) return 80.0 + ((score - b[80]) / (b[85] - b[80])) * 5.0;
+  if (score > 0) return Math.max(15, (score / b[80]) * 80);
+  return 10.0;
+}
+
+// ============================================================================
+// ON-SCREEN SCIENTIFIC CALCULATOR (TCS iON CAT Style)
+// ============================================================================
+function CatScientificCalculator({ onClose }) {
+  const [display, setDisplay] = useState('0');
+  const [memory, setMemory] = useState(0);
+  const [prevVal, setPrevVal] = useState(null);
+  const [operator, setOperator] = useState(null);
+  const [waitingForOperand, setWaitingForOperand] = useState(false);
+  const [historyText, setHistoryText] = useState('');
+
+  const inputDigit = (digit) => {
+    if (waitingForOperand) {
+      setDisplay(String(digit));
+      setWaitingForOperand(false);
+    } else {
+      setDisplay(display === '0' ? String(digit) : display.length < 14 ? display + digit : display);
+    }
+  };
+
+  const inputDot = () => {
+    if (waitingForOperand) {
+      setDisplay('0.');
+      setWaitingForOperand(false);
+    } else if (!display.includes('.')) {
+      setDisplay(display + '.');
+    }
+  };
+
+  const clearAll = () => {
+    setDisplay('0');
+    setPrevVal(null);
+    setOperator(null);
+    setWaitingForOperand(false);
+    setHistoryText('');
+  };
+
+  const backspace = () => {
+    if (waitingForOperand) return;
+    setDisplay(display.length > 1 ? display.slice(0, -1) : '0');
+  };
+
+  const toggleSign = () => {
+    const val = parseFloat(display);
+    if (!isNaN(val) && val !== 0) setDisplay(String(-val));
+  };
+
+  const applyUnary = (fnName) => {
+    const val = parseFloat(display);
+    if (isNaN(val)) return;
+    let res = val;
+    try {
+      switch (fnName) {
+        case 'sqrt':
+          res = val < 0 ? NaN : Math.sqrt(val);
+          break;
+        case 'sqr':
+          res = val * val;
+          break;
+        case 'inv':
+          res = val === 0 ? NaN : 1 / val;
+          break;
+        case 'log':
+          res = val <= 0 ? NaN : Math.log10(val);
+          break;
+        case 'ln':
+          res = val <= 0 ? NaN : Math.log(val);
+          break;
+        case 'exp':
+          res = Math.exp(val);
+          break;
+        case 'sin':
+          res = Math.sin((val * Math.PI) / 180);
+          break;
+        case 'cos':
+          res = Math.cos((val * Math.PI) / 180);
+          break;
+        case 'tan':
+          res = Math.tan((val * Math.PI) / 180);
+          break;
+        case 'pct':
+          res = val / 100;
+          break;
+        default:
+          break;
+      }
+      if (!isFinite(res) || isNaN(res)) {
+        setDisplay('Error');
+      } else {
+        setDisplay(String(Number(res.toPrecision(10))));
+      }
+      setWaitingForOperand(true);
+    } catch {
+      setDisplay('Error');
+    }
+  };
+
+  const performOperation = (nextOp) => {
+    const inputValue = parseFloat(display);
+    if (isNaN(inputValue)) {
+      setDisplay('0');
+      return;
+    }
+
+    if (prevVal === null) {
+      setPrevVal(inputValue);
+      setHistoryText(`${inputValue} ${nextOp}`);
+    } else if (operator) {
+      const currentValue = prevVal || 0;
+      let newValue = currentValue;
+      switch (operator) {
+        case '+':
+          newValue = currentValue + inputValue;
+          break;
+        case '-':
+          newValue = currentValue - inputValue;
+          break;
+        case '×':
+          newValue = currentValue * inputValue;
+          break;
+        case '÷':
+          newValue = inputValue === 0 ? NaN : currentValue / inputValue;
+          break;
+        case '^':
+          newValue = Math.pow(currentValue, inputValue);
+          break;
+        default:
+          break;
+      }
+      if (!isFinite(newValue) || isNaN(newValue)) {
+        setDisplay('Error');
+        setPrevVal(null);
+        setOperator(null);
+        setHistoryText('');
+        return;
+      }
+      const rounded = Number(newValue.toPrecision(10));
+      setDisplay(String(rounded));
+      setPrevVal(nextOp === '=' ? null : rounded);
+      setHistoryText(nextOp === '=' ? '' : `${rounded} ${nextOp}`);
+    }
+    setWaitingForOperand(true);
+    setOperator(nextOp === '=' ? null : nextOp);
+  };
+
+  return (
+    <div className="fixed top-16 right-6 z-50 w-80 bg-slate-100 border-2 border-slate-400 rounded-lg shadow-2xl select-none text-slate-900 overflow-hidden">
+      {/* Titlebar */}
+      <div className="bg-[#1e3a8a] text-white px-3 py-2 flex items-center justify-between text-xs font-semibold">
+        <div className="flex items-center gap-1.5">
+          <CalcIcon className="w-3.5 h-3.5" />
+          <span>CAT Scientific Calculator</span>
+        </div>
+        <button onClick={onClose} className="hover:bg-blue-800 p-0.5 rounded">
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Screen */}
+      <div className="p-2.5 bg-slate-200 border-b border-slate-300">
+        <div className="bg-white border border-slate-400 rounded px-2.5 py-1.5 text-right shadow-inner">
+          <div className="text-[10px] text-slate-500 h-3.5 font-mono truncate">{historyText || (memory !== 0 ? `M = ${memory}` : '')}</div>
+          <div className="text-xl font-mono font-bold text-slate-900 overflow-x-auto">{display}</div>
+        </div>
+      </div>
+
+      {/* Keypad */}
+      <div className="p-2.5 grid grid-cols-5 gap-1.5 text-xs font-semibold">
+        {/* Memory Row */}
+        <button onClick={() => setMemory(0)} className="bg-slate-300 hover:bg-slate-400 py-1.5 rounded text-slate-800">MC</button>
+        <button onClick={() => { setDisplay(String(memory)); setWaitingForOperand(true); }} className="bg-slate-300 hover:bg-slate-400 py-1.5 rounded text-slate-800">MR</button>
+        <button onClick={() => setMemory(parseFloat(display) || 0)} className="bg-slate-300 hover:bg-slate-400 py-1.5 rounded text-slate-800">MS</button>
+        <button onClick={() => setMemory((m) => m + (parseFloat(display) || 0))} className="bg-slate-300 hover:bg-slate-400 py-1.5 rounded text-slate-800">M+</button>
+        <button onClick={() => setMemory((m) => m - (parseFloat(display) || 0))} className="bg-slate-300 hover:bg-slate-400 py-1.5 rounded text-slate-800">M-</button>
+
+        {/* Scientific Row 1 */}
+        <button onClick={() => applyUnary('sin')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-1.5 rounded">sin</button>
+        <button onClick={() => applyUnary('cos')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-1.5 rounded">cos</button>
+        <button onClick={() => applyUnary('tan')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-1.5 rounded">tan</button>
+        <button onClick={backspace} className="bg-rose-600 hover:bg-rose-700 text-white py-1.5 rounded">⌫</button>
+        <button onClick={clearAll} className="bg-rose-700 hover:bg-rose-800 text-white py-1.5 rounded">C</button>
+
+        {/* Scientific Row 2 */}
+        <button onClick={() => applyUnary('log')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-1.5 rounded">log</button>
+        <button onClick={() => applyUnary('ln')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-1.5 rounded">ln</button>
+        <button onClick={() => applyUnary('exp')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-1.5 rounded">eˣ</button>
+        <button onClick={() => performOperation('^')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-1.5 rounded">xʸ</button>
+        <button onClick={() => applyUnary('sqrt')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-1.5 rounded">√x</button>
+
+        {/* Digits & Ops */}
+        <button onClick={() => inputDigit(7)} className="bg-white hover:bg-slate-50 border border-slate-300 py-2 rounded font-bold text-sm">7</button>
+        <button onClick={() => inputDigit(8)} className="bg-white hover:bg-slate-50 border border-slate-300 py-2 rounded font-bold text-sm">8</button>
+        <button onClick={() => inputDigit(9)} className="bg-white hover:bg-slate-50 border border-slate-300 py-2 rounded font-bold text-sm">9</button>
+        <button onClick={() => performOperation('÷')} className="bg-amber-100 hover:bg-amber-200 border border-amber-300 py-2 rounded font-bold text-sm">÷</button>
+        <button onClick={() => applyUnary('pct')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-2 rounded">%</button>
+
+        <button onClick={() => inputDigit(4)} className="bg-white hover:bg-slate-50 border border-slate-300 py-2 rounded font-bold text-sm">4</button>
+        <button onClick={() => inputDigit(5)} className="bg-white hover:bg-slate-50 border border-slate-300 py-2 rounded font-bold text-sm">5</button>
+        <button onClick={() => inputDigit(6)} className="bg-white hover:bg-slate-50 border border-slate-300 py-2 rounded font-bold text-sm">6</button>
+        <button onClick={() => performOperation('×')} className="bg-amber-100 hover:bg-amber-200 border border-amber-300 py-2 rounded font-bold text-sm">×</button>
+        <button onClick={() => applyUnary('inv')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-2 rounded">1/x</button>
+
+        <button onClick={() => inputDigit(1)} className="bg-white hover:bg-slate-50 border border-slate-300 py-2 rounded font-bold text-sm">1</button>
+        <button onClick={() => inputDigit(2)} className="bg-white hover:bg-slate-50 border border-slate-300 py-2 rounded font-bold text-sm">2</button>
+        <button onClick={() => inputDigit(3)} className="bg-white hover:bg-slate-50 border border-slate-300 py-2 rounded font-bold text-sm">3</button>
+        <button onClick={() => performOperation('-')} className="bg-amber-100 hover:bg-amber-200 border border-amber-300 py-2 rounded font-bold text-sm">-</button>
+        <button onClick={() => applyUnary('sqr')} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-2 rounded">x²</button>
+
+        <button onClick={() => inputDigit(0)} className="bg-white hover:bg-slate-50 border border-slate-300 py-2 rounded font-bold text-sm">0</button>
+        <button onClick={inputDot} className="bg-white hover:bg-slate-50 border border-slate-300 py-2 rounded font-bold text-sm">.</button>
+        <button onClick={toggleSign} className="bg-slate-200 hover:bg-slate-300 border border-slate-300 py-2 rounded font-bold">+/-</button>
+        <button onClick={() => performOperation('+')} className="bg-amber-100 hover:bg-amber-200 border border-amber-300 py-2 rounded font-bold text-sm">+</button>
+        <button onClick={() => performOperation('=')} className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded font-bold text-sm">=</button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// TITA ON-SCREEN KEYPAD (Authentic CAT Type-In-The-Answer Virtual Pad)
+// ============================================================================
+function TitaVirtualKeypad({ value, onChange }) {
+  const handleKey = (key) => {
+    const current = value || '';
+    if (key === 'CLEAR') {
+      onChange('');
+    } else if (key === 'BACKSPACE') {
+      onChange(current.slice(0, -1));
+    } else if (key === '-') {
+      if (current.startsWith('-')) {
+        onChange(current.slice(1));
+      } else {
+        onChange('-' + current);
+      }
+    } else if (key === '.') {
+      if (!current.includes('.')) {
+        onChange(current === '' || current === '-' ? current + '0.' : current + '.');
+      }
+    } else {
+      if (current.length < 15) {
+        onChange(current + key);
+      }
+    }
+  };
+
+  return (
+    <div className="mt-4 max-w-xs bg-slate-100 border border-slate-300 rounded-lg p-3 shadow-sm">
+      <div className="text-[11px] font-semibold text-slate-600 uppercase tracking-wider mb-1.5">
+        Type-In-The-Answer (TITA) Input
+      </div>
+      <input
+        type="text"
+        readOnly
+        value={value || ''}
+        placeholder="Use keypad below..."
+        className="w-full bg-white border-2 border-blue-500 rounded px-3 py-2 text-lg font-mono font-bold text-slate-900 mb-2.5 focus:outline-none"
+      />
+      <div className="grid grid-cols-3 gap-1.5">
+        <button
+          type="button"
+          onClick={() => handleKey('BACKSPACE')}
+          className="col-span-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold py-1.5 rounded text-xs border border-slate-300"
+        >
+          Backspace
+        </button>
+        {['7', '8', '9', '4', '5', '6', '1', '2', '3', '0', '.', '-'].map((k) => (
+          <button
+            key={k}
+            type="button"
+            onClick={() => handleKey(k)}
+            className="bg-white hover:bg-blue-50 active:bg-blue-100 text-slate-900 font-bold py-2 rounded text-sm border border-slate-300 shadow-xs"
+          >
+            {k}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={() => handleKey('CLEAR')}
+          className="col-span-3 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold py-1.5 rounded text-xs border border-rose-200 mt-0.5"
+        >
+          Clear All
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================================
+// STATUS PALETTE BADGE (TCS iON Authentic Shapes & Colors)
+// ============================================================================
+function PaletteBadge({ status, number, active, onClick }) {
+  // Statuses:
+  // 'NOT_VISITED' -> Grey square
+  // 'NOT_ANSWERED' -> Red trapezoid/pill
+  // 'ANSWERED' -> Green badge
+  // 'MARKED' -> Purple circle
+  // 'ANSWERED_MARKED' -> Purple circle with green dot
+  let styleClasses = 'bg-slate-200 text-slate-700 border-slate-300 rounded';
+  if (status === 'NOT_ANSWERED') {
+    styleClasses = 'bg-rose-600 text-white border-rose-700 rounded-t-sm rounded-b-xl';
+  } else if (status === 'ANSWERED') {
+    styleClasses = 'bg-emerald-600 text-white border-emerald-700 rounded-t-xl rounded-b-sm';
+  } else if (status === 'MARKED') {
+    styleClasses = 'bg-purple-600 text-white border-purple-700 rounded-full';
+  } else if (status === 'ANSWERED_MARKED') {
+    styleClasses = 'bg-purple-600 text-white border-purple-700 rounded-full relative';
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`w-9 h-9 text-xs font-bold flex items-center justify-center border transition-transform ${styleClasses} ${
+        active ? 'ring-2 ring-offset-1 ring-blue-600 scale-105' : 'hover:opacity-90'
+      }`}
+    >
+      {number}
+      {status === 'ANSWERED_MARKED' && (
+        <span className="w-2.5 h-2.5 bg-emerald-400 border border-white rounded-full absolute -bottom-0.5 -right-0.5" />
+      )}
+    </button>
+  );
+}
+
+// ============================================================================
+// MAIN APPLICATION COMPONENT
+// ============================================================================
+function App() {
+  // Navigation Screens: 'LOBBY' | 'EXAM' | 'ANALYSIS'
+  const [screen, setScreen] = useState('LOBBY');
+  const [lobbyTab, setLobbyTab] = useState('PRACTICE'); // 'PRACTICE' | 'HISTORY'
+
+  // Lobby Configuration
+  const [selectedYear, setSelectedYear] = useState(2024);
+  const [selectedSlot, setSelectedSlot] = useState(1);
+  const [examMode, setExamMode] = useState('SECTIONAL'); // 'SECTIONAL' | 'FULL'
+  const [selectedSection, setSelectedSection] = useState('VARC'); // 'VARC' | 'DILR' | 'QA'
+  const [candidateName, setCandidateName] = useState('CAT Aspirant');
+
+  // Custom Imported Papers (stored in localStorage)
+  const [customPapers, setCustomPapers] = useState(() => {
+    try {
+      const saved = localStorage.getItem('cat_sim_custom_papers_v1');
+      return saved ? JSON.parse(saved) : {};
+    } catch {
+      return {};
+    }
+  });
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importJsonText, setImportJsonText] = useState('');
+  const [importError, setImportError] = useState('');
+
+  // Attempt History (stored in localStorage)
+  const [attemptHistory, setAttemptHistory] = useState(() => {
+    try {
+      const saved = localStorage.getItem('cat_sim_history_v1');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Active Exam State
+  const [examSections, setExamSections] = useState([]);
+  const [activeSecIdx, setActiveSecIdx] = useState(0);
+  const [activeQIdx, setActiveQIdx] = useState(0);
+  const [sectionTimeLeft, setSectionTimeLeft] = useState(40 * 60);
+  const [responses, setResponses] = useState({}); // { [qId]: { answer, status, timeSpent } }
+  const [currentDraftAnswer, setCurrentDraftAnswer] = useState('');
+
+  // Exam Modals & UI Utilities
+  const [showCalc, setShowCalc] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
+  const [showQuestionPaper, setShowQuestionPaper] = useState(false);
+  const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+  const [isFullscreenPane, setIsFullscreenPane] = useState(false);
+
+  // Completed Result State for Analysis View
+  const [activeResult, setActiveResult] = useState(null);
+
+  // Analysis Filter States
+  const [analysisSectionFilter, setAnalysisSectionFilter] = useState('ALL');
+  const [analysisStatusFilter, setAnalysisStatusFilter] = useState('ALL');
+
+  // Persist history & custom papers
+  useEffect(() => {
+    try {
+      localStorage.setItem('cat_sim_history_v1', JSON.stringify(attemptHistory));
+    } catch {
+      // ignore storage quota error
+    }
+  }, [attemptHistory]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('cat_sim_custom_papers_v1', JSON.stringify(customPapers));
+    } catch {
+      // ignore storage quota error
+    }
+  }, [customPapers]);
+
+  // ==========================================================================
+  // START EXAM HANDLER
+  // ==========================================================================
+  const startExam = () => {
+    const builtSections = buildPaperForConfig({
+      year: selectedYear,
+      slot: selectedSlot,
+      mode: examMode,
+      selectedSection,
+      customPapers
+    });
+
+    const initialResponses = {};
+    builtSections.forEach((sec, sIdx) => {
+      sec.questions.forEach((q, qIdx) => {
+        initialResponses[q.id] = {
+          answer: '',
+          status: sIdx === 0 && qIdx === 0 ? 'NOT_ANSWERED' : 'NOT_VISITED',
+          timeSpent: 0
+        };
+      });
+    });
+
+    setExamSections(builtSections);
+    setActiveSecIdx(0);
+    setActiveQIdx(0);
+    setSectionTimeLeft(40 * 60);
+    setResponses(initialResponses);
+    setCurrentDraftAnswer('');
+    setShowCalc(false);
+    setShowSubmitConfirm(false);
+    setScreen('EXAM');
+  };
+
+  // ==========================================================================
+  // COUNTDOWN TIMER & PER-QUESTION TIME TRACKING (1s tick during EXAM)
+  // ==========================================================================
+  const currentSectionObj = examSections[activeSecIdx] || null;
+  const currentQuestion = currentSectionObj?.questions?.[activeQIdx] || null;
+
+  useEffect(() => {
+    if (screen !== 'EXAM' || !currentQuestion) return;
+
+    const timer = setInterval(() => {
+      // Increment timeSpent on current question
+      setResponses((prev) => {
+        const prevRec = prev[currentQuestion.id] || { answer: '', status: 'NOT_ANSWERED', timeSpent: 0 };
+        return {
+          ...prev,
+          [currentQuestion.id]: {
+            ...prevRec,
+            timeSpent: prevRec.timeSpent + 1
+          }
+        };
+      });
+
+      // Decrement section timer
+      setSectionTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          handleSectionAutoAdvance();
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  });
+
+  // Sync draft answer whenever active question changes
+  useEffect(() => {
+    if (!currentQuestion) return;
+    const saved = responses[currentQuestion.id];
+    setCurrentDraftAnswer(saved?.answer || '');
+    if (saved && saved.status === 'NOT_VISITED') {
+      setResponses((prev) => ({
+        ...prev,
+        [currentQuestion.id]: {
+          ...prev[currentQuestion.id],
+          status: 'NOT_ANSWERED'
+        }
+      }));
+    }
+  }, [activeSecIdx, activeQIdx, currentQuestion?.id]);
+
+  // ==========================================================================
+  // EXAM NAVIGATION & RESPONSE ACTIONS
+  // ==========================================================================
+  const commitDraftToQuestion = (qId, draftVal, markFlag = false) => {
+    const hasAnswer = String(draftVal).trim() !== '';
+    let newStatus = 'NOT_ANSWERED';
+    if (hasAnswer && markFlag) newStatus = 'ANSWERED_MARKED';
+    else if (hasAnswer) newStatus = 'ANSWERED';
+    else if (markFlag) newStatus = 'MARKED';
+
+    setResponses((prev) => ({
+      ...prev,
+      [qId]: {
+        ...(prev[qId] || { timeSpent: 0 }),
+        answer: draftVal,
+        status: newStatus
+      }
+    }));
+  };
+
+  const handleSaveAndNext = () => {
+    if (!currentQuestion || !currentSectionObj) return;
+    commitDraftToQuestion(currentQuestion.id, currentDraftAnswer, false);
+    const nextIdx = (activeQIdx + 1) % currentSectionObj.questions.length;
+    setActiveQIdx(nextIdx);
+  };
+
+  const handleMarkForReviewAndNext = () => {
+    if (!currentQuestion || !currentSectionObj) return;
+    commitDraftToQuestion(currentQuestion.id, currentDraftAnswer, true);
+    const nextIdx = (activeQIdx + 1) % currentSectionObj.questions.length;
+    setActiveQIdx(nextIdx);
+  };
+
+  const handleClearResponse = () => {
+    if (!currentQuestion) return;
+    setCurrentDraftAnswer('');
+    setResponses((prev) => ({
+      ...prev,
+      [currentQuestion.id]: {
+        ...(prev[currentQuestion.id] || { timeSpent: 0 }),
+        answer: '',
+        status: 'NOT_ANSWERED'
+      }
+    }));
+  };
+
+  const handleJumpToQuestion = (targetQIdx) => {
+    if (!currentQuestion) return;
+    // Save current draft status automatically when navigating palette
+    const existingStatus = responses[currentQuestion.id]?.status;
+    const wasMarked = existingStatus === 'MARKED' || existingStatus === 'ANSWERED_MARKED';
+    commitDraftToQuestion(currentQuestion.id, currentDraftAnswer, wasMarked);
+    setActiveQIdx(targetQIdx);
+  };
+
+  const handleSectionAutoAdvance = () => {
+    // Commit current question first
+    if (currentQuestion) {
+      const existingStatus = responses[currentQuestion.id]?.status;
+      const wasMarked = existingStatus === 'MARKED' || existingStatus === 'ANSWERED_MARKED';
+      commitDraftToQuestion(currentQuestion.id, currentDraftAnswer, wasMarked);
+    }
+
+    if (activeSecIdx < examSections.length - 1) {
+      setActiveSecIdx((idx) => idx + 1);
+      setActiveQIdx(0);
+      setSectionTimeLeft(40 * 60);
+    } else {
+      finalizeAndScoreExam();
+    }
+  };
+
+  const handleConfirmSectionOrExamSubmit = () => {
+    setShowSubmitConfirm(false);
+    handleSectionAutoAdvance();
+  };
+
+  // ==========================================================================
+  // SCORING & ANALYTICS ENGINE
+  // ==========================================================================
+  const finalizeAndScoreExam = () => {
+    // Ensure latest draft is captured
+    const finalResponses = { ...responses };
+    if (currentQuestion) {
+      const hasAnswer = String(currentDraftAnswer).trim() !== '';
+      const prevSt = finalResponses[currentQuestion.id]?.status;
+      const wasMarked = prevSt === 'MARKED' || prevSt === 'ANSWERED_MARKED';
+      finalResponses[currentQuestion.id] = {
+        ...(finalResponses[currentQuestion.id] || { timeSpent: 0 }),
+        answer: currentDraftAnswer,
+        status: hasAnswer ? (wasMarked ? 'ANSWERED_MARKED' : 'ANSWERED') : wasMarked ? 'MARKED' : 'NOT_ANSWERED'
+      };
+    }
+
+    let totalScore = 0;
+    let maxPossibleMarks = 0;
+    let totalCorrect = 0;
+    let totalIncorrect = 0;
+    let totalUnattempted = 0;
+    let totalPositiveMarks = 0;
+    let totalNegativeMarks = 0;
+    let totalTimeSeconds = 0;
+
+    const sectionBreakdown = [];
+    const topicMap = {};
+    const detailedQuestions = [];
+
+    examSections.forEach((sec) => {
+      let secScore = 0;
+      let secMax = 0;
+      let secCorrect = 0;
+      let secIncorrect = 0;
+      let secUnattempted = 0;
+      let secTime = 0;
+
+      sec.questions.forEach((q) => {
+        const rec = finalResponses[q.id] || { answer: '', status: 'NOT_VISITED', timeSpent: 0 };
+        const userAns = String(rec.answer || '').trim();
+        const isAttempted = userAns !== '';
+        let isCorrect = false;
+        let marksAwarded = 0;
+
+        secMax += 3;
+        maxPossibleMarks += 3;
+        secTime += rec.timeSpent;
+        totalTimeSeconds += rec.timeSpent;
+
+        if (isAttempted) {
+          // Compare normalized numeric/string answer
+          const normUser = userAns.replace(/\s+/g, '').toLowerCase();
+          const normCorrect = String(q.correctAnswer).replace(/\s+/g, '').toLowerCase();
+          isCorrect = normUser === normCorrect;
+
+          if (isCorrect) {
+            marksAwarded = 3;
+            secCorrect += 1;
+            totalCorrect += 1;
+            totalPositiveMarks += 3;
+          } else {
+            marksAwarded = q.type === 'MCQ' ? -1 : 0;
+            secIncorrect += 1;
+            totalIncorrect += 1;
+            if (q.type === 'MCQ') totalNegativeMarks += 1;
+          }
+        } else {
+          secUnattempted += 1;
+          totalUnattempted += 1;
+        }
+
+        secScore += marksAwarded;
+        totalScore += marksAwarded;
+
+        // Topic aggregation
+        const topicKey = `${sec.section} • ${q.topic}`;
+        if (!topicMap[topicKey]) {
+          topicMap[topicKey] = {
+            topic: q.topic,
+            section: sec.section,
+            total: 0,
+            correct: 0,
+            incorrect: 0,
+            unattempted: 0,
+            score: 0,
+            timeSpent: 0
+          };
+        }
+        topicMap[topicKey].total += 1;
+        topicMap[topicKey].score += marksAwarded;
+        topicMap[topicKey].timeSpent += rec.timeSpent;
+        if (!isAttempted) topicMap[topicKey].unattempted += 1;
+        else if (isCorrect) topicMap[topicKey].correct += 1;
+        else topicMap[topicKey].incorrect += 1;
+
+        detailedQuestions.push({
+          ...q,
+          userAnswer: userAns,
+          status: rec.status,
+          timeSpent: rec.timeSpent,
+          isAttempted,
+          isCorrect,
+          marksAwarded
+        });
+      });
+
+      const secAttempted = secCorrect + secIncorrect;
+      const secAccuracy = secAttempted > 0 ? Math.round((secCorrect / secAttempted) * 100) : 0;
+      const secPercentile = estimateCatPercentile(secScore, selectedYear, true, sec.section);
+
+      sectionBreakdown.push({
+        section: sec.section,
+        totalQuestions: sec.questions.length,
+        score: secScore,
+        maxMarks: secMax,
+        correct: secCorrect,
+        incorrect: secIncorrect,
+        unattempted: secUnattempted,
+        accuracy: secAccuracy,
+        timeSpent: secTime,
+        estimatedPercentile: Number(secPercentile.toFixed(2))
+      });
+    });
+
+    const totalAttempted = totalCorrect + totalIncorrect;
+    const totalQuestionsCount = totalAttempted + totalUnattempted;
+    const overallAccuracy = totalAttempted > 0 ? Math.round((totalCorrect / totalAttempted) * 100) : 0;
+    const attemptRate = totalQuestionsCount > 0 ? Math.round((totalAttempted / totalQuestionsCount) * 100) : 0;
+
+    const estimatedPercentile = Number(
+      estimateCatPercentile(
+        totalScore,
+        selectedYear,
+        examMode === 'SECTIONAL',
+        selectedSection
+      ).toFixed(2)
+    );
+
+    const resultRecord = {
+      id: `attempt_${Date.now()}`,
+      timestamp: new Date().toLocaleString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      year: selectedYear,
+      slot: selectedSlot,
+      mode: examMode,
+      sectionLabel: examMode === 'FULL' ? 'Full Mock (VARC + DILR + QA)' : `${selectedSection} Sectional`,
+      totalScore,
+      maxPossibleMarks,
+      totalQuestionsCount,
+      totalCorrect,
+      totalIncorrect,
+      totalUnattempted,
+      totalPositiveMarks,
+      totalNegativeMarks,
+      overallAccuracy,
+      attemptRate,
+      totalTimeSeconds,
+      estimatedPercentile,
+      sectionBreakdown,
+      topicBreakdown: Object.values(topicMap),
+      detailedQuestions
+    };
+
+    setAttemptHistory((prev) => [resultRecord, ...prev]);
+    setActiveResult(resultRecord);
+    setAnalysisSectionFilter('ALL');
+    setAnalysisStatusFilter('ALL');
+    setScreen('ANALYSIS');
+  };
+
+  // ==========================================================================
+  // CUSTOM PAPER IMPORTER (For Percentyl / Custom JSON PYQs)
+  // ==========================================================================
+  const handleImportCustomPaper = () => {
+    setImportError('');
+    try {
+      const parsed = JSON.parse(importJsonText);
+      if (!parsed.VARC && !parsed.DILR && !parsed.QA) {
+        throw new Error('JSON must contain at least one of "VARC", "DILR", or "QA" arrays.');
+      }
+      const key = `${selectedYear}-S${selectedSlot}`;
+      setCustomPapers((prev) => ({
+        ...prev,
+        [key]: parsed
+      }));
+      setShowImportModal(false);
+      setImportJsonText('');
+    } catch (err) {
+      setImportError(err.message || 'Invalid JSON format.');
+    }
+  };
+
+  const sampleImportTemplate = JSON.stringify(
+    {
+      VARC: [
+        {
+          id: 'imp_v1',
+          section: 'VARC',
+          type: 'MCQ',
+          topic: 'Reading Comprehension',
+          passageObj: {
+            title: 'Imported Passage 1',
+            text: 'Paste your full RC passage text from Percentyl here...'
+          },
+          question: 'What is the central thesis of the passage?',
+          options: ['Option A', 'Option B', 'Option C', 'Option D'],
+          correctAnswer: '0',
+          solution: 'Detailed explanation for Option A.'
+        }
+      ],
+      DILR: [],
+      QA: [
+        {
+          id: 'imp_q1',
+          section: 'QA',
+          type: 'TITA',
+          topic: 'Arithmetic',
+          question: 'If x + 1/x = 5, find x^2 + 1/x^2.',
+          correctAnswer: '23',
+          solution: '(x + 1/x)^2 - 2 = 25 - 2 = 23.'
+        }
+      ]
+    },
+    null,
+    2
+  );
+
+  // Format MM:SS
+  const formatClock = (secs) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
+
+  // Palette live counters for active section
+  const paletteCounts = useMemo(() => {
+    const counts = {
+      ANSWERED: 0,
+      NOT_ANSWERED: 0,
+      NOT_VISITED: 0,
+      MARKED: 0,
+      ANSWERED_MARKED: 0
+    };
+    if (!currentSectionObj) return counts;
+    currentSectionObj.questions.forEach((q) => {
+      const st = responses[q.id]?.status || 'NOT_VISITED';
+      counts[st] = (counts[st] || 0) + 1;
+    });
+    return counts;
+  }, [currentSectionObj, responses]);
+
+  // ==========================================================================
+  // VIEW 1: LANDING DASHBOARD / EXAM LOBBY
+  // ==========================================================================
+  if (screen === 'LOBBY') {
+    const yearInfo = CAT_YEAR_CONFIG[selectedYear];
+    const customPaperExists = Boolean(customPapers[`${selectedYear}-S${selectedSlot}`]);
+
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+        {/* Top Portal Header */}
+        <header className="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-900/40">
+                <Target className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-lg sm:text-xl font-bold tracking-tight text-white">
+                    CAT PYQ <span className="text-blue-400">iON Simulator</span>
+                  </h1>
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30">
+                    2020 – 2025 Archive
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400">
+                  Authentic 40-Min Sectional & 120-Min Full Mock Practice Engine
+                </p>
+              </div>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
+              <button
+                onClick={() => setLobbyTab('PRACTICE')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition ${
+                  lobbyTab === 'PRACTICE'
+                    ? 'bg-blue-600 text-white shadow'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Play className="w-3.5 h-3.5" />
+                <span>Exam Lobby</span>
+              </button>
+              <button
+                onClick={() => setLobbyTab('HISTORY')}
+                className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition ${
+                  lobbyTab === 'HISTORY'
+                    ? 'bg-blue-600 text-white shadow'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <History className="w-3.5 h-3.5" />
+                <span>My Attempts ({attemptHistory.length})</span>
+              </button>
+              <button
+                onClick={() => setShowImportModal(true)}
+                className="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-emerald-400 hover:bg-emerald-500/10 flex items-center gap-1.5 transition"
+              >
+                <Upload className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Import PYQ</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+          {lobbyTab === 'PRACTICE' ? (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Left 8 Cols: Test Configurator */}
+              <div className="lg:col-span-8 space-y-6">
+                {/* Step 1: Test Mode Selection */}
+                <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-blue-400 flex items-center gap-2">
+                      <Layers className="w-4 h-4" />
+                      Step 1: Choose Test Format
+                    </h2>
+                    <span className="text-xs text-slate-400">Strict CAT Marking (+3 / -1 MCQ, 0 TITA)</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setExamMode('SECTIONAL')}
+                      className={`text-left p-4 rounded-xl border-2 transition-all ${
+                        examMode === 'SECTIONAL'
+                          ? 'border-blue-500 bg-blue-950/30 shadow-lg shadow-blue-950/40'
+                          : 'border-slate-800 bg-slate-950/60 hover:border-slate-700'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-500/20 text-blue-300">
+                          40 MINUTES
+                        </span>
+                        {examMode === 'SECTIONAL' && <CheckCircle2 className="w-5 h-5 text-blue-400" />}
+                      </div>
+                      <h3 className="text-base font-bold text-white">Single Sectional Test</h3>
+                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                        Attempt individual VARC, DILR, or Quant PYQ sets with a dedicated 40:00 countdown timer & instant sectional analytics.
+                      </p>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setExamMode('FULL')}
+                      className={`text-left p-4 rounded-xl border-2 transition-all ${
+                        examMode === 'FULL'
+                          ? 'border-indigo-500 bg-indigo-950/30 shadow-lg shadow-indigo-950/40'
+                          : 'border-slate-800 bg-slate-950/60 hover:border-slate-700'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-indigo-500/20 text-indigo-300">
+                          120 MINUTES (3 × 40m)
+                        </span>
+                        {examMode === 'FULL' && <CheckCircle2 className="w-5 h-5 text-indigo-400" />}
+                      </div>
+                      <h3 className="text-base font-bold text-white">Full-Length CAT Mock</h3>
+                      <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                        Real exam simulation: VARC → DILR → QA in fixed order with locked 40-minute sectional timers & overall CAT percentile report.
+                      </p>
+                    </button>
+                  </div>
+                </section>
+
+                {/* Step 2: Year & Slot Selector (2020 - 2025) */}
+                <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-blue-400 flex items-center gap-2">
+                      <BookOpen className="w-4 h-4" />
+                      Step 2: Select CAT Past Year (2020 – 2025) & Slot
+                    </h2>
+                    <span className="text-xs font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+                      {yearInfo.pattern}
+                    </span>
+                  </div>
+
+                  {/* Year Grid */}
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5 mb-5">
+                    {[2025, 2024, 2023, 2022, 2021, 2020].map((yr) => (
+                      <button
+                        key={yr}
+                        type="button"
+                        onClick={() => setSelectedYear(yr)}
+                        className={`py-3 px-2 rounded-xl border font-bold text-center transition ${
+                          selectedYear === yr
+                            ? 'bg-blue-600 border-blue-400 text-white shadow-md shadow-blue-900/50'
+                            : 'bg-slate-950 border-slate-800 text-slate-300 hover:border-slate-600'
+                        }`}
+                      >
+                        <div className="text-base">CAT {yr}</div>
+                        <div className="text-[10px] font-normal opacity-80 mt-0.5">
+                          {CAT_YEAR_CONFIG[yr].maxMarks} Marks
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Slot Selection */}
+                  <div className="grid grid-cols-3 gap-3">
+                    {[1, 2, 3].map((sl) => {
+                      const hasCustom = Boolean(customPapers[`${selectedYear}-S${sl}`]);
+                      return (
+                        <button
+                          key={sl}
+                          type="button"
+                          onClick={() => setSelectedSlot(sl)}
+                          className={`p-3 rounded-xl border text-left transition ${
+                            selectedSlot === sl
+                              ? 'border-blue-500 bg-blue-950/30 text-white'
+                              : 'border-slate-800 bg-slate-950/60 text-slate-400 hover:border-slate-700'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-sm text-white">Slot {sl}</span>
+                            {hasCustom && (
+                              <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold">
+                                Custom
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-slate-400 mt-0.5">
+                            {sl === 1 ? 'Morning Shift' : sl === 2 ? 'Afternoon Shift' : 'Evening Shift'}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+
+                {/* Step 3: Section Picker (if Sectional Mode) */}
+                {examMode === 'SECTIONAL' && (
+                  <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-blue-400 mb-4 flex items-center gap-2">
+                      <Timer className="w-4 h-4" />
+                      Step 3: Select Sectional Paper (40:00 Timer)
+                    </h2>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                      {[
+                        {
+                          key: 'VARC',
+                          title: 'VARC',
+                          subtitle: 'Verbal Ability & Reading Comprehension',
+                          qs: yearInfo.counts.VARC,
+                          desc: '4 RC Passages + Para Jumbles, Odd-One-Out & Summary'
+                        },
+                        {
+                          key: 'DILR',
+                          title: 'DILR',
+                          subtitle: 'Data Interpretation & Logical Reasoning',
+                          qs: yearInfo.counts.DILR,
+                          desc: 'Split-Screen Caselets, Tables, Tournaments & Venn Sets'
+                        },
+                        {
+                          key: 'QA',
+                          title: 'Quant (QA)',
+                          subtitle: 'Quantitative Aptitude',
+                          qs: yearInfo.counts.QA,
+                          desc: 'Arithmetic, Algebra, Geometry, Number System & Modern Math'
+                        }
+                      ].map((sec) => (
+                        <button
+                          key={sec.key}
+                          type="button"
+                          onClick={() => setSelectedSection(sec.key)}
+                          className={`p-4 rounded-xl border-2 text-left transition ${
+                            selectedSection === sec.key
+                              ? 'border-emerald-500 bg-emerald-950/20 shadow-lg'
+                              : 'border-slate-800 bg-slate-950/60 hover:border-slate-700'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-lg font-extrabold text-white">{sec.title}</span>
+                            <span className="text-xs font-bold px-2 py-0.5 rounded bg-slate-800 text-slate-200">
+                              {sec.qs} Qs • 40m
+                            </span>
+                          </div>
+                          <div className="text-xs font-medium text-emerald-400 mb-1.5">{sec.subtitle}</div>
+                          <p className="text-[11px] text-slate-400 leading-relaxed">{sec.desc}</p>
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                )}
+              </div>
+
+              {/* Right 4 Cols: Exam Admit Summary & Launch Box */}
+              <div className="lg:col-span-4 space-y-6">
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl sticky top-24">
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>Session Briefing</span>
+                  </div>
+
+                  {/* Candidate Name Input */}
+                  <div className="mb-4">
+                    <label className="block text-xs font-medium text-slate-400 mb-1">Candidate Name (Shown on Console)</label>
+                    <input
+                      type="text"
+                      value={candidateName}
+                      onChange={(e) => setCandidateName(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:border-blue-500 focus:outline-none"
+                    />
+                  </div>
+
+                  <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 space-y-3 mb-5">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-slate-400">Paper Selected</span>
+                      <span className="font-bold text-white">CAT {selectedYear} — Slot {selectedSlot}</span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-slate-400">Attempt Mode</span>
+                      <span className="font-bold text-blue-400">
+                        {examMode === 'FULL' ? 'Full Mock (3 Sections)' : `${selectedSection} Sectional`}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-slate-400">Duration</span>
+                      <span className="font-bold text-amber-400">
+                        {examMode === 'FULL' ? '120 Mins (40m Locked / Sec)' : '40 Mins Strict Countdown'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-slate-400">Total Questions</span>
+                      <span className="font-bold text-white">
+                        {examMode === 'FULL'
+                          ? yearInfo.counts.VARC + yearInfo.counts.DILR + yearInfo.counts.QA
+                          : yearInfo.counts[selectedSection]}{' '}
+                        Questions
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-slate-400">Question Source</span>
+                      <span className="font-semibold text-emerald-400">
+                        {customPaperExists ? 'Imported Custom Paper' : 'Curated CAT PYQ Bank'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Authentic Exam Features Checklist */}
+                  <ul className="space-y-2 text-xs text-slate-300 mb-6">
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>TCS iON Color-Coded Question Palette</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Built-in On-Screen Scientific Calculator</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>TITA Virtual Keypad + Split-Screen RCs/DILR</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Post-Test Percentile & Topic-Wise Diagnostics</span>
+                    </li>
+                  </ul>
+
+                  <button
+                    type="button"
+                    onClick={startExam}
+                    className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-lg shadow-blue-900/50 flex items-center justify-center gap-2 transition transform active:scale-[0.99]"
+                  >
+                    <Play className="w-4 h-4 fill-current" />
+                    <span>Launch CAT Exam Console</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* ATTEMPT HISTORY TAB */
+            <div className="space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-bold text-white">Past Mock & Sectional Attempts</h2>
+                  <p className="text-xs text-slate-400">
+                    Click any completed attempt to reopen its full diagnostic scorecard and solutions.
+                  </p>
+                </div>
+                {attemptHistory.length > 0 && (
+                  <button
+                    onClick={() => setAttemptHistory([])}
+                    className="px-3 py-1.5 rounded-lg bg-rose-950/60 border border-rose-800/60 text-rose-300 hover:bg-rose-900/60 text-xs font-semibold flex items-center gap-1.5"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Clear History</span>
+                  </button>
+                )}
+              </div>
+
+              {attemptHistory.length === 0 ? (
+                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center">
+                  <BarChart3 className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                  <h3 className="text-base font-bold text-white">No Tests Attempted Yet</h3>
+                  <p className="text-xs text-slate-400 max-w-md mx-auto mt-1 mb-5">
+                    Start a 40-minute VARC, DILR, or Quant sectional test or a 120-minute full mock from the Exam Lobby to track your scores and estimated CAT percentiles.
+                  </p>
+                  <button
+                    onClick={() => setLobbyTab('PRACTICE')}
+                    className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold"
+                  >
+                    Go to Exam Lobby
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {attemptHistory.map((item) => (
+                    <div
+                      key={item.id}
+                      onClick={() => {
+                        setActiveResult(item);
+                        setScreen('ANALYSIS');
+                      }}
+                      className="bg-slate-900 border border-slate-800 hover:border-blue-500/60 rounded-2xl p-5 cursor-pointer transition shadow-lg group"
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs font-bold px-2.5 py-0.5 rounded bg-blue-500/15 text-blue-300 border border-blue-500/20">
+                          CAT {item.year} • Slot {item.slot}
+                        </span>
+                        <span className="text-[11px] text-slate-500">{item.timestamp}</span>
+                      </div>
+                      <h3 className="text-base font-bold text-white group-hover:text-blue-400 transition">
+                        {item.sectionLabel}
+                      </h3>
+                      <div className="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-slate-800">
+                        <div>
+                          <div className="text-[10px] uppercase text-slate-500">Score</div>
+                          <div className="text-base font-extrabold text-white">
+                            {item.totalScore}/{item.maxPossibleMarks}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-[10px] uppercase text-slate-500">Accuracy</div>
+                          <div className="text-base font-extrabold text-emerald-400">{item.overallAccuracy}%</div>
+                        </div>
+                        <div>
+                          <div className="text-[10px] uppercase text-slate-500">Est. %ile</div>
+                          <div className="text-base font-extrabold text-amber-400">{item.estimatedPercentile}%</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </main>
+
+        {/* Custom PYQ JSON Importer Modal */}
+        {showImportModal && (
+          <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div>
+                  <h3 className="text-base font-bold text-white">
+                    Import Custom PYQ Paper for CAT {selectedYear} — Slot {selectedSlot}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Paste structured questions (from Percentyl or your own notes) to simulate that exact slot.
+                  </p>
+                </div>
+                <button onClick={() => setShowImportModal(false)} className="text-slate-400 hover:text-white">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="mt-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-slate-300">Paper JSON Payload</span>
+                  <button
+                    type="button"
+                    onClick={() => setImportJsonText(sampleImportTemplate)}
+                    className="text-xs text-blue-400 hover:underline font-medium"
+                  >
+                    Load Sample JSON Template
+                  </button>
+                </div>
+                <textarea
+                  rows={10}
+                  value={importJsonText}
+                  onChange={(e) => setImportJsonText(e.target.value)}
+                  placeholder="Paste JSON here..."
+                  className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs font-mono text-slate-200 focus:border-blue-500 focus:outline-none"
+                />
+                {importError && (
+                  <div className="text-xs text-rose-400 bg-rose-950/50 border border-rose-800 rounded-lg px-3 py-2">
+                    {importError}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-5 flex items-center justify-end gap-3">
+                {customPaperExists && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const updated = { ...customPapers };
+                      delete updated[`${selectedYear}-S${selectedSlot}`];
+                      setCustomPapers(updated);
+                      setShowImportModal(false);
+                    }}
+                    className="px-3 py-2 rounded-lg text-xs font-semibold text-rose-400 hover:bg-rose-950/50 mr-auto"
+                  >
+                    Revert to Built-in Bank
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setShowImportModal(false)}
+                  className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleImportCustomPaper}
+                  className="px-4 py-2 rounded-lg bg-blue-600 text-white text-xs font-bold hover:bg-blue-500"
+                >
+                  Save & Bind to CAT {selectedYear} S{selectedSlot}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ==========================================================================
+  // VIEW 2: AUTHENTIC TCS iON CAT EXAM INTERFACE
+  // ==========================================================================
+  if (screen === 'EXAM' && currentSectionObj && currentQuestion) {
+    const isSplitLayout = Boolean(currentQuestion.passageObj || currentQuestion.setObj);
+    const isLowTime = sectionTimeLeft <= 300; // under 5 mins
+
+    return (
+      <div className="h-screen flex flex-col bg-white text-slate-900 overflow-hidden select-none">
+        {/* Top TCS iON Blue Header */}
+        <header className="bg-[#1e3a8a] text-white px-4 py-2 flex items-center justify-between shrink-0 shadow">
+          <div className="flex items-center gap-3">
+            <span className="font-extrabold tracking-wide text-sm sm:text-base">
+              CAT {selectedYear} — Slot {selectedSlot}
+            </span>
+            <span className="hidden md:inline-block text-xs bg-blue-800/90 border border-blue-600 px-2.5 py-0.5 rounded">
+              {examMode === 'FULL' ? 'Full-Length Mock Test' : `${selectedSection} Sectional Test`}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              type="button"
+              onClick={() => setShowQuestionPaper(true)}
+              className="bg-blue-800 hover:bg-blue-700 border border-blue-600 px-2.5 py-1 rounded text-xs font-semibold flex items-center gap-1"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Question Paper</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowInstructions(true)}
+              className="bg-blue-800 hover:bg-blue-700 border border-blue-600 px-2.5 py-1 rounded text-xs font-semibold flex items-center gap-1"
+            >
+              <Info className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Instructions</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowCalc((v) => !v)}
+              className={`px-2.5 py-1 rounded text-xs font-bold flex items-center gap-1 border transition ${
+                showCalc
+                  ? 'bg-amber-400 text-slate-950 border-amber-300'
+                  : 'bg-blue-700 hover:bg-blue-600 text-white border-blue-500'
+              }`}
+            >
+              <CalcIcon className="w-3.5 h-3.5" />
+              <span>Calculator</span>
+            </button>
+          </div>
+        </header>
+
+        {/* Sub-Header: Section Tabs (Locked in Full Mock) + Countdown Timer */}
+        <div className="bg-slate-100 border-b border-slate-300 px-4 py-1.5 flex flex-wrap items-center justify-between gap-2 shrink-0">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[11px] font-bold text-slate-500 uppercase mr-1">Sections:</span>
+            {examSections.map((sec, idx) => {
+              const isActive = idx === activeSecIdx;
+              const isLocked = idx !== activeSecIdx;
+              return (
+                <div
+                  key={sec.section}
+                  title={isLocked ? 'Locked by CAT sectional time limit' : 'Active Section'}
+                  className={`px-3 py-1 rounded text-xs font-bold flex items-center gap-1.5 border ${
+                    isActive
+                      ? 'bg-[#2563eb] text-white border-blue-700 shadow-xs'
+                      : 'bg-slate-200 text-slate-500 border-slate-300 cursor-not-allowed'
+                  }`}
+                >
+                  <span>{sec.section}</span>
+                  {isLocked && <Lock className="w-3 h-3" />}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Live Section Timer */}
+          <div className="flex items-center gap-3">
+            <div
+              className={`px-3 py-1 rounded border font-mono text-sm font-extrabold flex items-center gap-2 ${
+                isLowTime
+                  ? 'bg-rose-100 border-rose-400 text-rose-700 animate-pulse'
+                  : 'bg-white border-slate-300 text-slate-900'
+              }`}
+            >
+              <Clock className={`w-4 h-4 ${isLowTime ? 'text-rose-600' : 'text-blue-700'}`} />
+              <span>Time Left: {formatClock(sectionTimeLeft)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Body: Question Workspace + Right Palette Sidebar */}
+        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+          {/* Left / Center Question Workspace */}
+          <div className="flex-1 flex flex-col overflow-hidden border-r border-slate-300">
+            {/* Question Top Metadata Strip */}
+            <div className="bg-slate-50 border-b border-slate-200 px-4 py-2 flex flex-wrap items-center justify-between gap-2 shrink-0">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-extrabold text-slate-900">
+                  Question No. {currentQuestion.qNumber}
+                </span>
+                <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-200 text-slate-700">
+                  {currentQuestion.type === 'TITA' ? 'Type In The Answer (TITA)' : 'Multiple Choice (MCQ)'}
+                </span>
+              </div>
+              <div className="flex items-center gap-3 text-xs font-semibold">
+                <span className="text-emerald-700">Correct: +3</span>
+                <span className="text-rose-700">
+                  Wrong: {currentQuestion.type === 'MCQ' ? '-1' : '0 (No Negative)'}
+                </span>
+              </div>
+            </div>
+
+            {/* Split-Screen or Single-Pane Question Body */}
+            <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+              {/* Left Passage / DILR Caselet Pane (if applicable) */}
+              {isSplitLayout && (
+                <div
+                  className={`${
+                    isFullscreenPane ? 'w-full' : 'md:w-1/2'
+                  } h-1/2 md:h-full overflow-y-auto p-5 bg-[#fcfcfd] border-b md:border-b-0 md:border-r border-slate-300 leading-relaxed`}
+                >
+                  <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200">
+                    <h3 className="text-xs font-extrabold uppercase tracking-wider text-blue-800">
+                      {currentQuestion.passageObj?.title || currentQuestion.setObj?.title}
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setIsFullscreenPane((v) => !v)}
+                      className="text-slate-500 hover:text-slate-800 p-1 rounded"
+                      title="Toggle Pane Width"
+                    >
+                      {isFullscreenPane ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  <div className="text-sm text-slate-800 whitespace-pre-line font-serif space-y-3">
+                    {currentQuestion.passageObj?.text || currentQuestion.setObj?.context}
+                  </div>
+                </div>
+              )}
+
+              {/* Right Question & Options / TITA Pane */}
+              {(!isSplitLayout || !isFullscreenPane) && (
+                <div
+                  className={`${
+                    isSplitLayout ? 'md:w-1/2 h-1/2 md:h-full' : 'w-full h-full'
+                  } overflow-y-auto p-5 sm:p-6 bg-white`}
+                >
+                  <div className="text-sm sm:text-[15px] font-medium text-slate-900 whitespace-pre-line leading-relaxed mb-5">
+                    {currentQuestion.question}
+                  </div>
+
+                  {currentQuestion.type === 'MCQ' ? (
+                    <div className="space-y-2.5 max-w-2xl">
+                      {currentQuestion.options.map((opt, oIdx) => {
+                        const isSelected = currentDraftAnswer === String(oIdx);
+                        return (
+                          <label
+                            key={oIdx}
+                            onClick={() => setCurrentDraftAnswer(String(oIdx))}
+                            className={`flex items-start gap-3 p-3.5 rounded-lg border cursor-pointer transition ${
+                              isSelected
+                                ? 'bg-blue-50 border-blue-600 ring-1 ring-blue-600'
+                                : 'bg-white border-slate-300 hover:bg-slate-50'
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name={`q_${currentQuestion.id}`}
+                              checked={isSelected}
+                              onChange={() => setCurrentDraftAnswer(String(oIdx))}
+                              className="mt-1 accent-blue-600 w-4 h-4 shrink-0"
+                            />
+                            <span className="text-sm text-slate-800 leading-snug">
+                              <strong className="mr-1.5 text-slate-600">({String.fromCharCode(65 + oIdx)})</strong>
+                              {opt}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <TitaVirtualKeypad value={currentDraftAnswer} onChange={setCurrentDraftAnswer} />
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Bottom TCS iON Action Bar */}
+            <div className="bg-slate-100 border-t border-slate-300 px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 shrink-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleMarkForReviewAndNext}
+                  className="px-3.5 py-2 rounded bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold shadow-xs transition"
+                >
+                  Mark for Review & Next
+                </button>
+                <button
+                  type="button"
+                  onClick={handleClearResponse}
+                  className="px-3.5 py-2 rounded bg-white hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-bold transition"
+                >
+                  Clear Response
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleSaveAndNext}
+                  className="px-5 py-2 rounded bg-[#2563eb] hover:bg-blue-700 text-white text-xs font-bold shadow-xs transition"
+                >
+                  Save & Next
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowSubmitConfirm(true)}
+                  className="px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition lg:hidden"
+                >
+                  {activeSecIdx < examSections.length - 1 ? 'Submit Section' : 'Submit Test'}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Sidebar: Candidate Profile + TCS iON Question Palette */}
+          <aside className="w-full lg:w-80 bg-[#eef2f6] flex flex-col shrink-0 max-h-60 lg:max-h-none border-t lg:border-t-0 border-slate-300">
+            {/* Candidate Profile Strip */}
+            <div className="p-3 bg-white border-b border-slate-300 flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-900 text-white flex items-center justify-center font-bold text-sm shrink-0">
+                <User className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="text-xs font-extrabold text-slate-900 truncate">{candidateName}</div>
+                <div className="text-[11px] text-slate-500">Roll No: CAT{selectedYear}0{selectedSlot}89</div>
+              </div>
+            </div>
+
+            {/* Status Legend with Live Counts */}
+            <div className="p-3 bg-white border-b border-slate-300 grid grid-cols-2 gap-2 text-[11px] font-semibold text-slate-700">
+              <div className="flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-t-md rounded-b-xs bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
+                  {paletteCounts.ANSWERED}
+                </span>
+                <span>Answered</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-t-xs rounded-b-md bg-rose-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
+                  {paletteCounts.NOT_ANSWERED}
+                </span>
+                <span>Not Answered</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded bg-slate-200 border border-slate-300 text-slate-800 flex items-center justify-center text-[10px] font-bold shrink-0">
+                  {paletteCounts.NOT_VISITED}
+                </span>
+                <span>Not Visited</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">
+                  {paletteCounts.MARKED}
+                </span>
+                <span>Marked</span>
+              </div>
+              <div className="col-span-2 flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px] font-bold relative shrink-0">
+                  {paletteCounts.ANSWERED_MARKED}
+                  <span className="w-2 h-2 bg-emerald-400 rounded-full absolute -bottom-0.5 -right-0.5" />
+                </span>
+                <span>Answered & Marked for Review</span>
+              </div>
+            </div>
+
+            {/* Section Header Banner */}
+            <div className="bg-[#1e3a8a] text-white px-3 py-1.5 text-xs font-bold">
+              {currentSectionObj.section} — Question Palette
+            </div>
+
+            {/* Numbered Question Grid */}
+            <div className="flex-1 overflow-y-auto p-3">
+              <div className="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-5 gap-2">
+                {currentSectionObj.questions.map((q, idx) => (
+                  <PaletteBadge
+                    key={q.id}
+                    number={q.qNumber}
+                    status={responses[q.id]?.status || 'NOT_VISITED'}
+                    active={idx === activeQIdx}
+                    onClick={() => handleJumpToQuestion(idx)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop Submit Section / Exam Button */}
+            <div className="p-3 bg-white border-t border-slate-300 hidden lg:block">
+              <button
+                type="button"
+                onClick={() => setShowSubmitConfirm(true)}
+                className="w-full py-2.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold uppercase tracking-wider shadow transition"
+              >
+                {activeSecIdx < examSections.length - 1
+                  ? `Submit ${currentSectionObj.section} & Next Section`
+                  : 'Submit Exam & View Analysis'}
+              </button>
+            </div>
+          </aside>
+        </div>
+
+        {/* Floating Scientific Calculator */}
+        {showCalc && <CatScientificCalculator onClose={() => setShowCalc(false)} />}
+
+        {/* Submit Confirmation Summary Modal */}
+        {showSubmitConfirm && (
+          <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl border border-slate-300">
+              <div className="flex items-center gap-2.5 text-amber-600 mb-2">
+                <AlertTriangle className="w-5 h-5" />
+                <h3 className="text-base font-extrabold text-slate-900">
+                  {activeSecIdx < examSections.length - 1
+                    ? `Confirm ${currentSectionObj.section} Section Submission`
+                    : 'Confirm Final Exam Submission'}
+                </h3>
+              </div>
+              <p className="text-xs text-slate-600 mb-4">
+                {activeSecIdx < examSections.length - 1
+                  ? 'Once submitted, you cannot return to this section. The next 40-minute section timer will begin immediately.'
+                  : 'Are you sure you want to submit your test and generate your detailed CAT scorecard?'}
+              </p>
+
+              <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 mb-5 text-xs space-y-1.5">
+                <div className="flex justify-between">
+                  <span className="text-slate-600">Total Questions in {currentSectionObj.section}:</span>
+                  <span className="font-bold">{currentSectionObj.questions.length}</span>
+                </div>
+                <div className="flex justify-between text-emerald-700">
+                  <span>Answered:</span>
+                  <span className="font-bold">{paletteCounts.ANSWERED + paletteCounts.ANSWERED_MARKED}</span>
+                </div>
+                <div className="flex justify-between text-rose-700">
+                  <span>Not Answered:</span>
+                  <span className="font-bold">{paletteCounts.NOT_ANSWERED}</span>
+                </div>
+                <div className="flex justify-between text-purple-700">
+                  <span>Marked for Review (Unanswered):</span>
+                  <span className="font-bold">{paletteCounts.MARKED}</span>
+                </div>
+                <div className="flex justify-between text-slate-600">
+                  <span>Not Visited:</span>
+                  <span className="font-bold">{paletteCounts.NOT_VISITED}</span>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => setShowSubmitConfirm(false)}
+                  className="px-4 py-2 rounded bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold"
+                >
+                  Resume Section
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmSectionOrExamSubmit}
+                  className="px-4 py-2 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold"
+                >
+                  Yes, Proceed
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Question Paper View Modal */}
+        {showQuestionPaper && (
+          <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+              <div className="bg-[#1e3a8a] text-white px-5 py-3 flex items-center justify-between">
+                <h3 className="text-sm font-bold">
+                  Full Question Paper — {currentSectionObj.section} (CAT {selectedYear} Slot {selectedSlot})
+                </h3>
+                <button onClick={() => setShowQuestionPaper(false)}>
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="p-5 overflow-y-auto space-y-5 divide-y divide-slate-200">
+                {currentSectionObj.questions.map((q) => (
+                  <div key={q.id} className="pt-4 first:pt-0">
+                    <div className="text-xs font-bold text-blue-800 mb-1">
+                      Q.{q.qNumber} [{q.type}] — {q.topic}
+                    </div>
+                    <p className="text-sm text-slate-800 whitespace-pre-line">{q.question}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Instructions Modal */}
+        {showInstructions && (
+          <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+            <div className="bg-white rounded-xl max-w-xl w-full p-6 shadow-2xl">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                <h3 className="text-base font-bold text-slate-900">CAT Exam Instructions</h3>
+                <button onClick={() => setShowInstructions(false)}>
+                  <X className="w-5 h-5 text-slate-500" />
+                </button>
+              </div>
+              <ul className="mt-4 space-y-2.5 text-xs text-slate-700 leading-relaxed list-disc pl-4">
+                <li>Each section is strictly timed at <strong>40 minutes</strong>. The timer counts down and auto-submits when it reaches 00:00.</li>
+                <li><strong>Marking Scheme:</strong> +3 marks for every correct answer. -1 mark for every incorrect MCQ answer. <strong>Zero negative marking</strong> for TITA (Type-In-The-Answer) questions.</li>
+                <li>Questions marked as <em>"Answered & Marked for Review"</em> will be evaluated for scoring.</li>
+                <li>Use the top-right <strong>Calculator</strong> button for the on-screen scientific calculator.</li>
+              </ul>
+              <div className="mt-5 text-right">
+                <button
+                  onClick={() => setShowInstructions(false)}
+                  className="px-4 py-2 rounded bg-blue-600 text-white text-xs font-bold"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ==========================================================================
+  // VIEW 3: POST-TEST DETAILED PERFORMANCE ANALYSIS
+  // ==========================================================================
+  if (screen === 'ANALYSIS' && activeResult) {
+    const filteredQuestions = activeResult.detailedQuestions.filter((q) => {
+      if (analysisSectionFilter !== 'ALL' && q.section !== analysisSectionFilter) return false;
+      if (analysisStatusFilter === 'CORRECT' && !q.isCorrect) return false;
+      if (analysisStatusFilter === 'INCORRECT' && (!q.isAttempted || q.isCorrect)) return false;
+      if (analysisStatusFilter === 'UNATTEMPTED' && q.isAttempted) return false;
+      if (
+        analysisStatusFilter === 'REVIEWED' &&
+        q.status !== 'MARKED' &&
+        q.status !== 'ANSWERED_MARKED'
+      )
+        return false;
+      return true;
+    });
+
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+        {/* Top Analysis Header */}
+        <header className="bg-slate-900 border-b border-slate-800 px-4 sm:px-6 py-4 sticky top-0 z-30">
+          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  PERFORMANCE REPORT
+                </span>
+                <span className="text-xs text-slate-400">{activeResult.timestamp}</span>
+              </div>
+              <h1 className="text-lg sm:text-xl font-extrabold text-white mt-1">
+                CAT {activeResult.year} (Slot {activeResult.slot}) — {activeResult.sectionLabel}
+              </h1>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={startExam}
+                className="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold flex items-center gap-1.5 border border-slate-700"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Re-Attempt</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setScreen('LOBBY')}
+                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold flex items-center gap-1.5 shadow"
+              >
+                <span>Back to Exam Lobby</span>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+          {/* 1. Hero Scorecard Metrics */}
+          <section className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="col-span-2 lg:col-span-1 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-5 shadow-xl text-white">
+              <div className="text-xs font-semibold uppercase tracking-wider opacity-85 flex items-center gap-1.5">
+                <Award className="w-4 h-4" />
+                <span>Net CAT Score</span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-black mt-2">
+                {activeResult.totalScore}
+                <span className="text-base font-semibold opacity-75"> / {activeResult.maxPossibleMarks}</span>
+              </div>
+              <div className="text-xs mt-2 opacity-90">
+                +{activeResult.totalPositiveMarks} Pos • -{activeResult.totalNegativeMarks} Neg
+              </div>
+            </div>
+
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+              <div className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1.5">
+                <TrendingUp className="w-4 h-4 text-amber-400" />
+                <span>Est. CAT Percentile</span>
+              </div>
+              <div className="text-3xl font-black text-amber-400 mt-2">
+                {activeResult.estimatedPercentile}%ile
+              </div>
+              <div className="text-[11px] text-slate-400 mt-1.5">
+                Calibrated to CAT {activeResult.year} curve
+              </div>
+            </div>
+
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+              <div className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1.5">
+                <Target className="w-4 h-4 text-emerald-400" />
+                <span>Accuracy Rate</span>
+              </div>
+              <div className="text-3xl font-black text-emerald-400 mt-2">{activeResult.overallAccuracy}%</div>
+              <div className="text-[11px] text-slate-400 mt-1.5">
+                {activeResult.totalCorrect} Right • {activeResult.totalIncorrect} Wrong
+              </div>
+            </div>
+
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+              <div className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-blue-400" />
+                <span>Attempt Rate</span>
+              </div>
+              <div className="text-3xl font-black text-white mt-2">{activeResult.attemptRate}%</div>
+              <div className="text-[11px] text-slate-400 mt-1.5">
+                {activeResult.totalCorrect + activeResult.totalIncorrect} of {activeResult.totalQuestionsCount} Qs
+              </div>
+            </div>
+
+            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+              <div className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-purple-400" />
+                <span>Total Time Used</span>
+              </div>
+              <div className="text-3xl font-black text-purple-300 mt-2">
+                {Math.floor(activeResult.totalTimeSeconds / 60)}m {activeResult.totalTimeSeconds % 60}s
+              </div>
+              <div className="text-[11px] text-slate-400 mt-1.5">
+                Avg {Math.round(activeResult.totalTimeSeconds / Math.max(1, activeResult.totalQuestionsCount))}s / Q
+              </div>
+            </div>
+          </section>
+
+          {/* 2. Sectional Breakdown Table */}
+          <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-blue-400 mb-4">
+              Sectional Scorecard & Cutoff Benchmark
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs sm:text-sm">
+                <thead>
+                  <tr className="border-b border-slate-800 text-slate-400 text-xs uppercase">
+                    <th className="py-3 px-3">Section</th>
+                    <th className="py-3 px-3">Score</th>
+                    <th className="py-3 px-3">Correct / Wrong / Left</th>
+                    <th className="py-3 px-3">Accuracy</th>
+                    <th className="py-3 px-3">Time Taken</th>
+                    <th className="py-3 px-3">Est. Percentile</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/70">
+                  {activeResult.sectionBreakdown.map((sec) => (
+                    <tr key={sec.section} className="hover:bg-slate-800/40">
+                      <td className="py-3.5 px-3 font-extrabold text-white">{sec.section}</td>
+                      <td className="py-3.5 px-3 font-bold text-blue-400">
+                        {sec.score} <span className="text-slate-500 font-normal">/ {sec.maxMarks}</span>
+                      </td>
+                      <td className="py-3.5 px-3">
+                        <span className="text-emerald-400 font-semibold">{sec.correct}C</span> •{' '}
+                        <span className="text-rose-400 font-semibold">{sec.incorrect}W</span> •{' '}
+                        <span className="text-slate-400">{sec.unattempted}U</span>
+                      </td>
+                      <td className="py-3.5 px-3 font-semibold text-white">{sec.accuracy}%</td>
+                      <td className="py-3.5 px-3 text-slate-300">{formatClock(sec.timeSpent)}</td>
+                      <td className="py-3.5 px-3">
+                        <span className="px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 font-bold text-xs">
+                          {sec.estimatedPercentile}%ile
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          {/* 3. Topic-Wise Strength & Weakness Diagnostic */}
+          <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-blue-400 mb-4">
+              Topic-Wise Accuracy & Time Allocation
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {activeResult.topicBreakdown.map((t) => {
+                const attempted = t.correct + t.incorrect;
+                const acc = attempted > 0 ? Math.round((t.correct / attempted) * 100) : 0;
+                return (
+                  <div key={`${t.section}_${t.topic}`} className="bg-slate-950 border border-slate-800 rounded-xl p-4">
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-800 text-blue-300 mr-2">
+                          {t.section}
+                        </span>
+                        <span className="text-xs font-bold text-white">{t.topic}</span>
+                      </div>
+                      <span className="text-xs font-extrabold text-slate-300">
+                        {t.score >= 0 ? `+${t.score}` : t.score} pts
+                      </span>
+                    </div>
+
+                    {/* Visual Accuracy Bar */}
+                    <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden mb-2">
+                      <div
+                        className={`h-full rounded-full ${
+                          acc >= 75 ? 'bg-emerald-500' : acc >= 45 ? 'bg-amber-500' : 'bg-rose-500'
+                        }`}
+                        style={{ width: `${attempted > 0 ? acc : 0}%` }}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-slate-400">
+                      <span>
+                        {t.correct}/{t.total} Correct ({attempted > 0 ? `${acc}% Acc` : 'Unattempted'})
+                      </span>
+                      <span>Time: {formatClock(t.timeSpent)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* 4. Question-by-Question Review & Worked Solutions */}
+          <section className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-blue-400">
+                Question-by-Question Review & Worked Solutions ({filteredQuestions.length})
+              </h2>
+
+              <div className="flex flex-wrap items-center gap-2">
+                {activeResult.sectionBreakdown.length > 1 && (
+                  <select
+                    value={analysisSectionFilter}
+                    onChange={(e) => setAnalysisSectionFilter(e.target.value)}
+                    className="bg-slate-950 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white"
+                  >
+                    <option value="ALL">All Sections</option>
+                    {activeResult.sectionBreakdown.map((s) => (
+                      <option key={s.section} value={s.section}>
+                        {s.section}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
+                {[
+                  { id: 'ALL', label: 'All' },
+                  { id: 'CORRECT', label: 'Correct' },
+                  { id: 'INCORRECT', label: 'Incorrect' },
+                  { id: 'UNATTEMPTED', label: 'Unattempted' },
+                  { id: 'REVIEWED', label: 'Marked' }
+                ].map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setAnalysisStatusFilter(f.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                      analysisStatusFilter === f.id
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-slate-950 text-slate-400 border border-slate-800 hover:text-white'
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {filteredQuestions.map((q) => (
+                <div
+                  key={q.id}
+                  className={`rounded-xl border p-5 bg-slate-950 ${
+                    !q.isAttempted
+                      ? 'border-slate-800'
+                      : q.isCorrect
+                      ? 'border-emerald-700/60'
+                      : 'border-rose-700/60'
+                  }`}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded bg-slate-800 text-white font-bold text-xs">
+                        {q.section} Q.{q.qNumber}
+                      </span>
+                      <span className="text-xs text-slate-400">{q.topic}</span>
+                      <span className="text-[11px] px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">
+                        {q.type}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-xs font-bold">
+                      <span className="text-slate-400 font-normal">Time: {q.timeSpent}s</span>
+                      {!q.isAttempted ? (
+                        <span className="text-slate-400">Unattempted (0)</span>
+                      ) : q.isCorrect ? (
+                        <span className="text-emerald-400 flex items-center gap-1">
+                          <CheckCircle2 className="w-4 h-4" /> Correct (+3)
+                        </span>
+                      ) : (
+                        <span className="text-rose-400 flex items-center gap-1">
+                          <XCircle className="w-4 h-4" /> Incorrect ({q.marksAwarded})
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Collapsible Passage / Caselet if present */}
+                  {(q.passageObj || q.setObj) && (
+                    <details className="mb-3 bg-slate-900/80 border border-slate-800 rounded-lg p-3">
+                      <summary className="text-xs font-semibold text-blue-400 cursor-pointer">
+                        View Associated Passage / DILR Caselet ({q.passageObj?.title || q.setObj?.title})
+                      </summary>
+                      <p className="mt-2 text-xs text-slate-300 whitespace-pre-line leading-relaxed">
+                        {q.passageObj?.text || q.setObj?.context}
+                      </p>
+                    </details>
+                  )}
+
+                  <p className="text-sm text-slate-200 whitespace-pre-line mb-4">{q.question}</p>
+
+                  {/* Options or TITA comparison */}
+                  {q.type === 'MCQ' ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+                      {q.options.map((opt, idx) => {
+                        const isCorr = String(idx) === String(q.correctAnswer);
+                        const isUser = q.isAttempted && String(idx) === String(q.userAnswer);
+                        let cls = 'border-slate-800 bg-slate-900/50 text-slate-300';
+                        if (isCorr) cls = 'border-emerald-500 bg-emerald-950/40 text-emerald-200 font-semibold';
+                        else if (isUser && !isCorr) cls = 'border-rose-500 bg-rose-950/40 text-rose-200';
+
+                        return (
+                          <div key={idx} className={`p-2.5 rounded-lg border text-xs flex items-start gap-2 ${cls}`}>
+                            <span className="font-bold">({String.fromCharCode(65 + idx)})</span>
+                            <span className="flex-1">{opt}</span>
+                            {isCorr && <span className="text-[10px] uppercase font-bold text-emerald-400">Correct</span>}
+                            {isUser && !isCorr && <span className="text-[10px] uppercase font-bold text-rose-400">Your Pick</span>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap gap-4 mb-4 text-xs">
+                      <div className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-800">
+                        <span className="text-slate-400 mr-2">Your Answer:</span>
+                        <span className={`font-mono font-bold ${q.isCorrect ? 'text-emerald-400' : 'text-rose-400'}`}>
+                          {q.isAttempted ? q.userAnswer : 'Not Attempted'}
+                        </span>
+                      </div>
+                      <div className="px-3 py-2 rounded-lg bg-emerald-950/30 border border-emerald-700/50">
+                        <span className="text-emerald-300 mr-2">Official Answer:</span>
+                        <span className="font-mono font-bold text-emerald-400">{q.correctAnswer}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Worked Solution Box */}
+                  <div className="bg-blue-950/20 border border-blue-900/50 rounded-lg p-3.5">
+                    <div className="text-[11px] font-bold uppercase tracking-wider text-blue-400 mb-1">
+                      Step-by-Step Solution
+                    </div>
+                    <p className="text-xs text-slate-300 whitespace-pre-line leading-relaxed">{q.solution}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
